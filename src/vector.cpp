@@ -16,11 +16,12 @@ int main()
     int mark;
     std::vector<Student> Students;
     
-    int sum, output;
-    double avg, median, final_mark;
+    int output;
     
     while (true) {
     
+    s.nd.clear();
+
     std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
     std::cin >> s.name;
     if (s.name == "STOP") break;
@@ -36,7 +37,6 @@ int main()
         std::cin >> s.n;
     }
 
-    sum = 0;
     for (int i = 0; i < s.n; i++) {
         std::cout << "Iveskite " << i + 1 << " darbo ivertinima: \n";
         std::cin >> mark;
@@ -47,9 +47,8 @@ int main()
             std::cin >> mark;
         }
         s.nd.push_back(mark);
-        sum += mark;
     }
-
+    
     std::cout << "Iveskite egzamino ivertinima: \n";
     std::cin >> s.egz;
     while (std::cin.fail() || s.egz <= 0 || s.egz > 10) {
@@ -57,38 +56,45 @@ int main()
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> s.egz;
-        }
-
+    }
+    
     Students.push_back(s);
-    }
+}
 
-    std::cout << "Kaip skaiciuoti galutini pazymi: naudojant vidurki - iveskite 0, naudojant mediana - iveskite 1: \n";
+std::cout << "Kaip skaiciuoti galutini pazymi: naudojant vidurki - iveskite 0, naudojant mediana - iveskite 1: \n";
+std::cin >> output;
+while (std::cin.fail() || (output != 0 && output != 1)) {
+    std::cout << "Klaidinga ivestis. Iveskite 0 arba 1:\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin >> output;
-    while (std::cin.fail() || (output != 0 && output != 1)) {
-        std::cout << "Klaidinga ivestis. Iveskite 0 arba 1:\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cin >> output;
-        }
+}
 
-        std::cout << " " << std::endl;
-        std::cout << "Vardas\tPavarde\tGalutinis (Vid.)\n";
-        std::cout << "----------------------------------------------------\n";
-        
-        if (output == 0) {
-            avg = (double)sum/s.n;
-            final_mark = 0.4*avg + 0.6*s.egz;
-            std::cout << s.name << "\t" << s.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
+std::cout << " " << std::endl;
+std::cout << "Vardas\tPavarde\tGalutinis\n";
+std::cout << "----------------------------------------------\n";
+
+for (auto& stud : Students) {
+    double final_mark;
+    if (output == 0) {
+                int sum = 0;
+                for (int mark : stud.nd) {
+                sum += mark;
+                }
+                double avg = (double)sum/stud.nd.size();
+                final_mark = 0.4*avg + 0.6*stud.egz;
+            std::cout << stud.name << "\t" << stud.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
         } else {
-            std::sort(s.nd.begin(), s.nd.end());
-            if (s.n % 2 == 1) {
-                median = s.nd.at(s.n/2);
+            std::sort(stud.nd.begin(), stud.nd.end());
+            double median;
+            if (stud.nd.size() % 2 == 1) {
+                median = stud.nd.at(stud.nd.size()/2);
             } else {
-                median = (s.nd.at(s.n/2 - 1) + s.nd.at(s.n/2))/2.0;
+                median = (stud.nd.at(stud.nd.size()/2 - 1) + stud.nd.at(stud.nd.size()/2))/2.0;
             }
-            final_mark = 0.4*median + 0.6*s.egz;
-            std::cout << s.name << "\t" << s.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
-    }
-
+            final_mark = 0.4*median + 0.6*stud.egz;
+            std::cout << stud.name << "\t" << stud.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
+        }
+}
     return 0;
 }
