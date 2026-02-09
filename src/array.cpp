@@ -16,8 +16,17 @@ int main()
     int mark;
     std::vector<Student> Students;
     
-    int output;
+    int output, choice;
     
+    while (true) {
+        std::cout << "Iveskite skaiciu: \n";
+        std::cout << "1 - iveskti viska ranka.\n";
+        std::cout << "2 - generuoti tik pazymius.\n";
+        std::cout << "3 - generuoti studentu vardus, pavardes ir pazymius.\n";
+        std::cout << "4 - baigti darba.\n";
+        std::cin >> choice;
+        
+        if (choice == 1) {
     while (true) {
     
     s.n = 0;
@@ -100,5 +109,18 @@ for (auto& stud : Students) {
             std::cout << stud.name << "\t" << stud.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
         }
 }
+        }
+
+        if (choice == 2) {
+
+        }
+        
+        if (choice == 3) {
+            
+        }
+        
+        if (choice == 4) break;
+    }
+
     return 0;
 }
