@@ -52,16 +52,18 @@ void Output(const std::vector<Student>& Students) {
 
 }
 
-std::string generateRandomString(int length) {
-    std::string letters = "abcdefghijklmnopqrstuvwxyz";
-    std::string result = "";
+std::string GenerateName(const std::string &vardas,
+                             const std::vector<std::string> &saknys)
+{
+    std::string saknis = saknys.at(rand() % saknys.size());
 
-    for (int i = 0; i < length; i++) {
-        char c = letters[rand() % letters.size()];
-        result += c;
-    }
+    if (vardas.substr(vardas.size() - 2) == "as")
+        return saknis + "enis";
 
-    return result;
+    if (vardas.back() == 'a')
+        return saknis + "aite";
+
+    return saknis + "is";
 }
 
 int main()
@@ -159,8 +161,12 @@ int main()
             std::cout << "Kiek studentu generuoti: " << std::endl;
             std::cin >> numb;
             for (int i = 0; i < numb; i++){
-            s.name = generateRandomString(8);
-            s.surname = generateRandomString(10);
+            std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
+            std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
+
+            Student s;
+            s.name = Names.at(rand() % Names.size());
+            s.surname = GenerateName(s.name, Surnames);
             
             std::cout << "Kiek namu darbu generuoti: \n";
             std::cin >> n;
