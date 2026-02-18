@@ -68,9 +68,9 @@ void Output(const std::vector<Student> &Students) {
                 
                 double median;
                 if (stud.n % 2 == 1) {
-                    median = stud.nd[stud.n/2];
+                    median = temp[stud.n/2];
                 } else {
-                    median = (stud.nd[stud.n/2 - 1] + stud.nd[stud.n/2])/2.0;
+                    median = (temp[stud.n/2 - 1] + temp[stud.n/2])/2.0;
                 }
                 final_mark = 0.4*median + 0.6*stud.egz;
                 std::cout << stud.name << "\t" << stud.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
