@@ -25,7 +25,7 @@ std::string GenerateName(const std::string &vardas,
     return saknis + "is";
 }
 
-void addStudent(Student*& Students, int& numb, const Student& newStudent) {
+void addStudent(Student* &Students, int &numb, const Student &newStudent) {
     Student* temp = new Student[numb + 1];
     for (int i = 0; i < numb; i++) {
         temp[i] = Students[i];
@@ -47,8 +47,8 @@ void Output(Student* Students, int numb) {
         std::cin >> output;
     }
     
-    std::cout << " " << std::endl;
-    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(15) << "Galutinis\n";
+    std::cout << " \n";
+    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << "Galutinis\n";
     std::cout << "----------------------------------------------\n";
     
     for (int i = 0; i < numb; i++) {
@@ -60,7 +60,7 @@ void Output(Student* Students, int numb) {
                     }
                     double avg = (double)sum/Students[i].n;
                     final_mark = 0.4*avg + 0.6*Students[i].egz;
-                std::cout << Students[i].name << "\t" << Students[i].surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
+                std::cout << std::left << std::setw(15) << Students[i].name << std::setw(15) << Students[i].surname << std::setw(15) << std::fixed << std::setprecision(2) << final_mark << "\n";
             } else {
                 std::sort(Students[i].nd, Students[i].nd + Students[i].n);
                 
@@ -70,10 +70,10 @@ void Output(Student* Students, int numb) {
                     median = Students[i].nd[n/2];
                 } else if (n % 2 == 0) {
                     median = (Students[i].nd[n/2 - 1] + Students[i].nd[n/2])/2.0;
+                }
             
                 final_mark = 0.4*median + 0.6*Students[i].egz;
-                std::cout << std::left << std::setw(15) << Students[i].name << std::setw(15) << Students[i].surname << std::setw(15) << std::fixed << std::setprecision(2) << final_mark << "\n";
-            }
+                std::cout << std::left << std::setw(30) << Students[i].name << std::setw(30) << Students[i].surname << std::setw(30) << std::fixed << std::setprecision(2) << final_mark << "\n";
         }
     }
 }
@@ -82,7 +82,7 @@ int main() {
     Student s;
     int mark;
     Student* Students = nullptr;
-    int numb;
+    int numb = 0;
     int choice;
     srand(time(NULL));
     
@@ -104,8 +104,8 @@ int main() {
         
         if (choice == 1) {
     while (true) {
-    
     s.n = 0;
+    s.nd = nullptr;
 
     std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
     std::cin >> s.name;
@@ -128,11 +128,11 @@ int main() {
             int *tempNd = new int[s.n + 1];
             for (int i = 0; i < s.n; i++) {
                 tempNd[i] = s.nd[i];
-                tempNd[s.n] = mark;
-                delete[] s.nd;
-                s.nd = tempNd;
-                s.n++;
             }
+            tempNd[s.n] = mark;
+            delete[] s.nd;
+            s.nd = tempNd;
+            s.n++;
         }
         
         std::cout << "Iveskite egzamino ivertinima: \n";
@@ -150,6 +150,8 @@ int main() {
 
         else if (choice == 2) {
         while (true) {
+        s.n = 0;
+        s.nd = nullptr;
         int n;
         std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
         std::cin >> s.name;
@@ -205,6 +207,7 @@ while (std::cin.fail() || nd_per_student <= 0 || nd_per_student > 100) {
 
     std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
 
+    s.nd = new int[s.n];
     for (int i = 0; i < numb; i++) {
 
         Student s;
