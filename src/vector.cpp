@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <limits>
 #include <ctime>
+#include <fstream>
+#include <sstream>
 
 struct Student {
     std::string name, surname;
@@ -64,6 +66,25 @@ std::string GenerateName(const std::string &vardas,
         return saknis + "aite";
 
     return saknis + "is";
+}
+
+void createFile (const std::vector<Student> &Students, int n) {
+    std::ofstream kursiokai("kursiokai.txt");
+    kursiokai << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde";
+    for (int i = 0; i < n; i++) {
+        kursiokai << std::setw(6) << "ND" << i+1;
+    }
+    kursiokai << std::setw(15) << "Egzaminas\n";
+
+    for (const auto &stud: Students) {
+        kursiokai << std::left << std::setw(15) << stud.name << std::setw(15) << stud.surname;
+        for (const auto &grade: stud.nd) {
+            kursiokai << std::setw(6) << grade;
+        }
+        kursiokai << stud.egz << "\n";
+    }
+
+    kursiokai.close();
 }
 
 int main()
@@ -160,14 +181,6 @@ int main()
             int numb, n;
             std::cout << "Kiek studentu generuoti: " << std::endl;
             std::cin >> numb;
-            for (int i = 0; i < numb; i++){
-            std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
-            std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
-
-            Student s;
-            s.name = Names.at(rand() % Names.size());
-            s.surname = GenerateName(s.name, Surnames);
-            
             std::cout << "Kiek namu darbu generuoti: \n";
             std::cin >> n;
         while (std::cin.fail() || n <= 0) {
@@ -176,6 +189,14 @@ int main()
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin >> n;
         }
+            for (int i = 0; i < numb; i++){
+            std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
+            std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
+
+            Student s;
+            s.name = Names.at(rand() % Names.size());
+            s.surname = GenerateName(s.name, Surnames);
+            
             s.nd.clear();
             for (int i = 0; i < n; i++) {
             int exs = (rand() % 10) + 1;
