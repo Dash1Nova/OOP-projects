@@ -112,9 +112,7 @@ bool createFile (const std::vector<Student> &Students, int n) {
 bool readFile(const std::string &filename, std::vector<Student> &Students) {
     std::ifstream stud_file(filename);
     std::string line;
-    std::getline(stud_file, line);
-    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(15) << "Galutinis (Vid)" << std::setw(15) << "Galutinis (Med)\n";
-    std::cout << "------------------------------------------------\n";
+    //std::getline(stud_file, line);
 
     while (std::getline(stud_file, line)) {
         std::istringstream iss(line);
@@ -133,7 +131,7 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         s.finalAvg = avg(s.nd, s.egz);
         s.finalMed = med(s.nd, s.egz);
         
-        std::cout << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(15) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(20) << s.finalMed << "\n";;
+        //std::cout << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(15) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(20) << s.finalMed << "\n";;
         Students.push_back(s);
         }
     }
@@ -158,8 +156,8 @@ bool compareByAvg(const Student &a, const Student &b) {
 }
 
 void printResults(const std::vector<Student> &Students) {
-    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(15) << "Galutinis (Vid.)" << std::setw(15) << "Galutinis (Med.)\n";
-    std::cout << "------------------------------------------------------\n";
+    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(20) << "Galutinis (Vid.)" << std::setw(17) << "Galutinis (Med.)\n";
+    std::cout << "-----------------------------------------------------------------------\n";
     for (const auto& s : Students) {
         std::cout << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(15) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(15) << s.finalMed << "\n";
     }
@@ -297,11 +295,11 @@ int main()
         
         int sorting;
         std::cout << "Pasirinkite pagal ka rusiuoti duomenis:\n";
-        std::cin >> sorting;
         std::cout << "1 - rusiuoti pagal varda.\n";
         std::cout << "2 - rusiuoti pagal pavarde.\n";
         std::cout << "3 - rusiuoti pagal galutini ivertinima (Vid.).\n";
         std::cout << "4 - rusiuoti pagal galutini ivertinima (Med.).\n";
+        std::cin >> sorting;
         while (std::cin.fail() || sorting < 1 || sorting > 4) {
         std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
         std::cin.clear();
@@ -319,6 +317,8 @@ int main()
             std::sort(Students.begin(), Students.end(), compareByMed);
 
         printResults(Students);
+
+        break;
     }
     }    
     return 0;
