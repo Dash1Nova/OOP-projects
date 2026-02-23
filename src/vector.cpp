@@ -51,7 +51,28 @@ void Output(const std::vector<Student>& Students) {
             std::cout << stud.name << "\t" << stud.surname << "\t" << std::fixed << std::setprecision(2) << final_mark << "\n";
         }
     }
+}
 
+double med(const std::vector<int> &nd, int egz) {
+    std::vector<int> temp = nd;
+    if (nd.empty()) return 0.6 * egz;
+    std::sort(temp.begin(), temp.end());
+    double median;
+    if (temp.size() % 2 == 1) {
+        median = temp.at(temp.size()/2);
+    } else {
+        median = (temp.at(temp.size()/2 - 1) + temp.at(temp.size()/2))/2.0;
+    }
+    return 0.4*median + 0.6*egz;
+}
+
+double avg(const std::vector<int> &nd, int egz) {
+    if (nd.empty()) return 0.6 * egz;
+    int sum = 0;
+        for (int mark : nd) {
+            sum += mark;
+        }
+    return 0.4*((double)sum / nd.size()) + 0.6*egz;
 }
 
 std::string GenerateName(const std::string &vardas,
@@ -87,13 +108,14 @@ void createFile (const std::vector<Student> &Students, int n) {
     kursiokai.close();
 }
 
-void readFile(const std::string &filename, std::vector<Student>& Students) {
+
+void readFile(const std::string &filename) {
     std::ifstream stud_file(filename);
     std::string line;
-    std::vector<Student> Students;
-    std::vector<int> nd;
+    std::getline(stud_file, line);
+    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(15) << "Galutinis (Vid)" << std::setw(15) << "Galutinis (Med)\n";
+    std::cout << "------------------------------------------------\n";
 
-    std::ifstream myFile(filename);
     while (std::getline(stud_file, line)) {
         std::istringstream iss(line);
         Student s;
@@ -103,19 +125,21 @@ void readFile(const std::string &filename, std::vector<Student>& Students) {
         while (iss >> mark) {
             grades.push_back(mark);
         }
-        if (grades.empty()) continue;
+        if (!grades.empty()) {;
         s.egz = grades.back();
         grades.pop_back();
         s.nd = grades;
 
-        Students.push_back(s);
+        double final_avg = avg(s.nd, s.egz);
+        double final_med = med(s.nd, s.egz);
+
+        std::cout << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(15) << std::fixed << std::setprecision(2) << final_avg << std::setw(20) << final_med << "\n";;
+        }
     }
-    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(15) << "Galutinis (Vid)" << std::setw(15) << "Galutinis (Med)" << "\n";
     ///////////////////////////////////////std::cout << std::string(70, '-') << "\n";
     stud_file.close();
-
-
 }
+
 
 int main()
 {
