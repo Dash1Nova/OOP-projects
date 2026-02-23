@@ -87,7 +87,7 @@ void createFile (const std::vector<Student> &Students, int n) {
     kursiokai.close();
 }
 
-void readFile(const std::string &filename) {
+void readFile(const std::string &filename, std::vector<Student>& Students) {
     std::ifstream stud_file(filename);
     std::string line;
     std::vector<Student> Students;
@@ -99,13 +99,22 @@ void readFile(const std::string &filename) {
         Student s;
         iss >> s.name >> s.surname;
         int mark;
-        s.nd.clear();
+        std::vector<int> grades;
         while (iss >> mark) {
-            nd.push_back(mark);
+            grades.push_back(mark);
         }
-    }
+        if (grades.empty()) continue;
+        s.egz = grades.back();
+        grades.pop_back();
+        s.nd = grades;
 
+        Students.push_back(s);
+    }
+    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(15) << "Galutinis (Vid)" << std::setw(15) << "Galutinis (Med)" << "\n";
+    ///////////////////////////////////////std::cout << std::string(70, '-') << "\n";
     stud_file.close();
+
+
 }
 
 int main()
