@@ -7,7 +7,6 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
-#include <filesystem>
 
 struct Student {
     std::string name, surname;
