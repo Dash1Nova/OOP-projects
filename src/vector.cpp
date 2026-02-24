@@ -6,6 +6,7 @@
 #include <ctime>
 #include <fstream>
 #include <sstream>
+#include <chrono>
 
 struct Student {
     std::string name, surname;
@@ -68,12 +69,12 @@ double med(const std::vector<int> &nd, int egz) {
 }
 
 double avg(const std::vector<int> &nd, int egz) {
-    if (nd.empty()) return 0.6 * egz;
+    if (nd.empty()) return 0.6*egz;
     int sum = 0;
         for (int mark : nd) {
             sum += mark;
         }
-    return 0.4*(double(sum) / nd.size()) + 0.6*egz;
+    return 0.4*(double(sum)/nd.size()) + 0.6*egz;
 }
 
 std::string GenerateName(const std::string &vardas,
@@ -111,10 +112,18 @@ bool createFile (const std::vector<Student> &Students, int n) {
 
 bool readFile(const std::string &filename, std::vector<Student> &Students) {
     std::ifstream stud_file(filename);
+    if (!stud_file.is_open()) {
+        std::cout << "Klaida: nepavyko atidaryti failo " << filename << std::endl;
+        return false;
+    }
+    std::cout << "Failas '" << filename << "' sėkmingai atidarytas." << std::endl;
     std::string line;
-    //std::getline(stud_file, line);
+    std::getline(stud_file, line);
+    std::cout << "Antraštė: " << line << std::endl;
 
+    int studentCount = 0;
     while (std::getline(stud_file, line)) {
+        if (line.empty()) continue;
         std::istringstream iss(line);
         Student s;
         iss >> s.name >> s.surname;
@@ -123,7 +132,7 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         while (iss >> mark) {
             grades.push_back(mark);
         }
-        if (!grades.empty()) {;
+        if (grades.size() >= 2) {;
         s.egz = grades.back();
         grades.pop_back();
         s.nd = grades;
@@ -131,12 +140,13 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         s.finalAvg = avg(s.nd, s.egz);
         s.finalMed = med(s.nd, s.egz);
         
-        //std::cout << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(15) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(20) << s.finalMed << "\n";;
         Students.push_back(s);
+        studentCount++;
         }
     }
     stud_file.close();
-    return true;
+    std::cout << "Nuskaityta " << studentCount << " studentų." << std::endl;
+    return studentCount > 0;
 }
 
 bool compareByName(const Student &a, const Student &b) {
@@ -155,11 +165,27 @@ bool compareByAvg(const Student &a, const Student &b) {
     return a.finalAvg < b.finalAvg;
 }
 
-void printResults(const std::vector<Student> &Students) {
-    std::cout << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(20) << "Galutinis (Vid.)" << std::setw(17) << "Galutinis (Med.)\n";
-    std::cout << "-----------------------------------------------------------------------\n";
+void printResults(const std::vector<Student> &Students, bool toFile = false, const std::string &filename = "rezultatai.txt") {
+    std::ofstream file;
+    if (toFile) {
+        file.open(filename);
+        if (!file.is_open()) {
+            std::cout << "Klaida: nepavyko sukurti failo " << filename << std::endl;
+            return;
+        }
+    }
+    
+    std::ostream &out = toFile ? file : std::cout;
+    
+    out << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(20) << "Galutinis (Vid.)" << std::setw(17) << "Galutinis (Med.)\n";
+    out << "-----------------------------------------------------------------------\n";
     for (const auto& s : Students) {
-        std::cout << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(15) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(15) << s.finalMed << "\n";
+        out << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(20) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(17) << std::fixed << std::setprecision(2) << s.finalMed << "\n";
+    }
+
+    if (toFile) {
+        file.close();
+        std::cout << "Rezultatai išsaugoti faile: " << filename << std::endl;
     }
 }
 
@@ -173,15 +199,15 @@ int main()
     srand(time(NULL));
 
     while (true) {
-        std::cout << "Iveskite skaiciu: \n";
         std::cout << "1 - iveskti viska ranka.\n";
         std::cout << "2 - generuoti tik pazymius.\n";
         std::cout << "3 - generuoti studentu vardus, pavardes ir pazymius.\n";
         std::cout << "4 - baigti darba.\n";
         std::cout << "5 - nuskaityti is failo.\n";
+        std::cout << "Pasirinkite: \n";
         std::cin >> choice;
         while (std::cin.fail() || choice < 1 || choice > 5) {
-        std::cout << "Klaidinga ivestis. Iveskite skaiciu 1-4:\n";
+        std::cout << "Klaidinga ivestis. Iveskite skaiciu 1-5:\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> choice;
@@ -225,6 +251,7 @@ int main()
                 Students.push_back(s);
             }
             Output(Students);
+            Students.clear();
             break;
         }
         
@@ -251,6 +278,7 @@ int main()
             s.egz = (rand() % 10) + 1;
             Students.push_back(s);
             Output(Students);
+            Students.clear();
             break;
         }
         
@@ -283,16 +311,22 @@ int main()
             Students.push_back(s);
             }
             Output(Students);
+            Students.clear();
             break;
         }
         
         else if (choice == 4) break;
+
         else if (choice == 5) {
         std::string filename;
         std::cout << "Iveskite failo pavadinima: ";
         std::cin >> filename;
-        readFile(filename, Students);
+        Students.clear();
+
+        auto start = std::chrono::high_resolution_clock::now();
         
+        if (readFile(filename, Students)) {
+        std::cout << "Failas sėkmingai nuskaitytas!\n";
         int sorting;
         std::cout << "Pasirinkite pagal ka rusiuoti duomenis:\n";
         std::cout << "1 - rusiuoti pagal varda.\n";
@@ -316,9 +350,23 @@ int main()
         else if (sorting == 4)
             std::sort(Students.begin(), Students.end(), compareByMed);
 
-        printResults(Students);
-
-        break;
+        int outputChoice;
+            std::cout << "Kur isvesti rezultatus:\n";
+            std::cout << "1 - ekrane\n";
+            std::cout << "2 - i faila\n";
+            std::cin >> outputChoice;
+            
+            if (outputChoice == 2) {
+                printResults(Students, true, "rezultatai.txt");
+            } else {
+                printResults(Students, false);
+            }
+        }
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+        std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
+        Students.clear();
     }
     }    
     return 0;
