@@ -7,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
+#include <filesystem>
 
 struct Student {
     std::string name, surname;
@@ -26,7 +27,7 @@ void Output(const std::vector<Student>& Students) {
         std::cin >> output;
     }
     
-    std::cout << " " << std::endl;
+    std::cout << "\n";
     std::cout << "Vardas\tPavarde\tGalutinis\n";
     std::cout << "----------------------------------------------\n";
     
@@ -112,14 +113,15 @@ bool createFile (const std::vector<Student> &Students, int n) {
 
 bool readFile(const std::string &filename, std::vector<Student> &Students) {
     std::ifstream stud_file(filename);
+
     if (!stud_file.is_open()) {
-        std::cout << "Klaida: nepavyko atidaryti failo " << filename << std::endl;
+        std::cout << "Klaida: nepavyko atidaryti failo \n" << filename;
         return false;
     }
-    std::cout << "Failas '" << filename << "' sėkmingai atidarytas." << std::endl;
+    std::cout << "Failas '" << filename << "' sekmingai atidarytas.\n";
     std::string line;
     std::getline(stud_file, line);
-    std::cout << "Antraštė: " << line << std::endl;
+    std::cout << "Antraste: " << line << "\n";
 
     int studentCount = 0;
     while (std::getline(stud_file, line)) {
@@ -145,15 +147,20 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         }
     }
     stud_file.close();
-    std::cout << "Nuskaityta " << studentCount << " studentų." << std::endl;
-    return studentCount > 0;
+    return true;
 }
 
 bool compareByName(const Student &a, const Student &b) {
+    if (a.name.length() != b.name.length()) {
+        return a.name.length() < b.name.length();
+    }
     return a.name < b.name;
 }
 
 bool compareBySurname(const Student &a, const Student &b) {
+    if (a.surname.length() != b.surname.length()) {
+        return a.surname.length() < b.surname.length();
+    }
     return a.surname < b.surname;
 }
 
@@ -170,7 +177,7 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
     if (toFile) {
         file.open(filename);
         if (!file.is_open()) {
-            std::cout << "Klaida: nepavyko sukurti failo " << filename << std::endl;
+            std::cout << "Klaida: nepavyko sukurti failo " << filename << "\n";
             return;
         }
     }
@@ -185,7 +192,7 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
 
     if (toFile) {
         file.close();
-        std::cout << "Rezultatai išsaugoti faile: " << filename << std::endl;
+        std::cout << "Rezultatai issaugoti faile: " << filename << "\n";
     }
 }
 
@@ -284,7 +291,7 @@ int main()
         
         else if (choice == 3) {
             int numb, n;
-            std::cout << "Kiek studentu generuoti: " << std::endl;
+            std::cout << "Kiek studentu generuoti: \n";
             std::cin >> numb;
             std::cout << "Kiek namu darbu generuoti: \n";
             std::cin >> n;
@@ -326,7 +333,7 @@ int main()
         auto start = std::chrono::high_resolution_clock::now();
         
         if (readFile(filename, Students)) {
-        std::cout << "Failas sėkmingai nuskaitytas!\n";
+        std::cout << "Failas sekmingai nuskaitytas!\n";
         int sorting;
         std::cout << "Pasirinkite pagal ka rusiuoti duomenis:\n";
         std::cout << "1 - rusiuoti pagal varda.\n";
