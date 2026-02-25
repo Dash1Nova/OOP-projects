@@ -250,20 +250,53 @@ int main()
                     std::cin >> s.egz;
                 }
                 
+                s.finalAvg = avg(s.nd, s.egz);
+                s.finalMed = med(s.nd, s.egz);
+
                 Students.push_back(s);
             }
-            Output(Students);
+
+            if (!Students.empty()) {
+            char toFileChoice;
+            std::cout << "Kur isvesti rezultatus? (e - ekrane, f - i faila): ";
+            std::cin >> toFileChoice;
+
+            int sorting;
+            std::cout << "Pasirinkite kaip rusiuoti duomenis:\n";
+            std::cout << "1 - vardas\n2 - pavarde\n3 - galutinis (Vid.)\n4 - galutinis (Med.)\n";
+            std::cin >> sorting;
+            while (std::cin.fail() || sorting < 1 || sorting > 4) {
+                std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cin >> sorting;
+            }
+            if (sorting == 1) std::sort(Students.begin(), Students.end(), compareByName);
+            else if (sorting == 2) std::sort(Students.begin(), Students.end(), compareBySurname);
+            else if (sorting == 3) std::sort(Students.begin(), Students.end(), compareByAvg);
+            else if (sorting == 4) std::sort(Students.begin(), Students.end(), compareByMed);
+
+            if (toFileChoice == 'f' || toFileChoice == 'F') {
+                createFile(Students, Students[0].nd.size());
+                printResults(Students, true, "kursiokai.txt");
+            } else {
+                printResults(Students, false);
+            }
+            }
             Students.clear();
             break;
         }
         
         else if (choice == 2) {
-        int n;
+    while (true) {
         std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
         std::cin >> s.name;
-            if (s.name == "STOP") break;
+        if (s.name == "STOP") break;
+
         std::cout << "Iveskite studento pavarde: \n";
         std::cin >> s.surname;
+
+        int n;
         std::cout << "Kiek namu darbu generuoti: \n";
         std::cin >> n;
         while (std::cin.fail() || n <= 0) {
@@ -272,17 +305,51 @@ int main()
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin >> n;
         }
-            s.nd.clear();
-            for (int i = 0; i < n; i++) {
+
+        s.nd.clear();
+        for (int i = 0; i < n; i++) {
             int exs = (rand() % 10) + 1;
             s.nd.push_back(exs);
-            }
-            s.egz = (rand() % 10) + 1;
-            Students.push_back(s);
-            Output(Students);
-            Students.clear();
-            break;
         }
+        s.egz = (rand() % 10) + 1;
+
+        s.finalAvg = avg(s.nd, s.egz);
+        s.finalMed = med(s.nd, s.egz);
+
+        Students.push_back(s);
+    }
+
+    if (!Students.empty()) {
+        char toFileChoice;
+        std::cout << "Kur isvesti rezultatus? (e - ekrane, f - i faila): \n";
+        std::cin >> toFileChoice;
+
+        int sorting;
+        std::cout << "Pasirinkite kaip rusiuoti duomenis:\n";
+        std::cout << "1 - vardas\n2 - pavarde\n3 - galutinis (Vid.)\n4 - galutinis (Med.)\n";
+        std::cin >> sorting;
+        while (std::cin.fail() || sorting < 1 || sorting > 4) {
+            std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin >> sorting;
+        }
+        if (sorting == 1) std::sort(Students.begin(), Students.end(), compareByName);
+        else if (sorting == 2) std::sort(Students.begin(), Students.end(), compareBySurname);
+        else if (sorting == 3) std::sort(Students.begin(), Students.end(), compareByAvg);
+        else if (sorting == 4) std::sort(Students.begin(), Students.end(), compareByMed);
+
+        if (toFileChoice == 'f' || toFileChoice == 'F') {
+            createFile(Students, Students[0].nd.size());
+            printResults(Students, true, "kursiokai.txt");
+        } else {
+            printResults(Students, false);
+        }
+    }
+
+    Students.clear();
+    break;
+}
         
         else if (choice == 3) {
             int numb, n;
@@ -310,9 +377,39 @@ int main()
             s.nd.push_back(exs);
             }
             s.egz = (rand() % 10) + 1;
+
+            s.finalAvg = avg(s.nd, s.egz);
+            s.finalMed = med(s.nd, s.egz);
+
             Students.push_back(s);
             }
-            Output(Students);
+            if (!Students.empty()) {
+            char toFileChoice;
+            std::cout << "Kur isvesti rezultatus? (e - ekrane, f - i faila): ";
+            std::cin >> toFileChoice;
+
+            int sorting;
+            std::cout << "Pasirinkite kaip rusiuoti duomenis:\n";
+            std::cout << "1 - vardas\n2 - pavarde\n3 - galutinis (Vid.)\n4 - galutinis (Med.)\n";
+            std::cin >> sorting;
+            while (std::cin.fail() || sorting < 1 || sorting > 4) {
+                std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cin >> sorting;
+            }
+            if (sorting == 1) std::sort(Students.begin(), Students.end(), compareByName);
+            else if (sorting == 2) std::sort(Students.begin(), Students.end(), compareBySurname);
+            else if (sorting == 3) std::sort(Students.begin(), Students.end(), compareByAvg);
+            else if (sorting == 4) std::sort(Students.begin(), Students.end(), compareByMed);
+
+            if (toFileChoice == 'f' || toFileChoice == 'F') {
+                createFile(Students, Students[0].nd.size());
+                printResults(Students, true, "kursiokai.txt");
+            } else {
+                printResults(Students, false);
+            }
+            }
             Students.clear();
             break;
         }
