@@ -93,9 +93,10 @@ std::string GenerateName(const std::string &vardas,
 
 bool createFile (const std::vector<Student> &Students, int n) {
     std::ofstream kursiokai("kursiokai.txt");
+    if (!kursiokai.is_open()) return false;
     kursiokai << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde";
     for (int i = 0; i < n; i++) {
-        kursiokai << std::setw(6) << "ND" << i+1;
+        kursiokai << std::setw(6) << ("ND" + std::to_string(i+1));
     }
     kursiokai << std::setw(15) << "Egzaminas\n";
 
@@ -122,27 +123,23 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
     std::getline(stud_file, line);
     std::cout << "Antraste: " << line << "\n";
 
-    int studentCount = 0;
     while (std::getline(stud_file, line)) {
         if (line.empty()) continue;
         std::istringstream iss(line);
         Student s;
         iss >> s.name >> s.surname;
         int mark;
-        std::vector<int> grades;
         while (iss >> mark) {
-            grades.push_back(mark);
+            s.nd.push_back(mark);
         }
-        if (grades.size() >= 2) {;
-        s.egz = grades.back();
-        grades.pop_back();
-        s.nd = grades;
+        if (s.nd.size() >= 2) {
+        s.egz = s.nd.back();
+        s.nd.pop_back();
 
         s.finalAvg = avg(s.nd, s.egz);
         s.finalMed = med(s.nd, s.egz);
         
         Students.push_back(s);
-        studentCount++;
         }
     }
     stud_file.close();
@@ -191,7 +188,6 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
 
     if (toFile) {
         file.close();
-        std::cout << "Rezultatai issaugoti faile: " << filename << "\n";
     }
 }
 
