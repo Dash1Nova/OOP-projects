@@ -98,7 +98,7 @@ bool createFile (const std::vector<Student> &Students, int n) {
     for (int i = 0; i < n; i++) {
         kursiokai << std::setw(6) << ("ND" + std::to_string(i+1));
     }
-    kursiokai << std::setw(15) << "Egzaminas\n";
+    kursiokai << std::setw(9) << "Egzaminas\n";
 
     for (const auto &stud: Students) {
         kursiokai << std::left << std::setw(15) << stud.name << std::setw(15) << stud.surname;
@@ -278,7 +278,7 @@ int main()
 
             if (toFileChoice == 'f' || toFileChoice == 'F') {
                 createFile(Students, Students[0].nd.size());
-                printResults(Students, true, "kursiokai.txt");
+                printResults(Students, true, "rezultatai.txt");
             } else {
                 printResults(Students, false);
             }
@@ -341,7 +341,7 @@ int main()
 
         if (toFileChoice == 'f' || toFileChoice == 'F') {
             createFile(Students, Students[0].nd.size());
-            printResults(Students, true, "kursiokai.txt");
+            printResults(Students, true, "rezultatai.txt");
         } else {
             printResults(Students, false);
         }
@@ -405,7 +405,7 @@ int main()
 
             if (toFileChoice == 'f' || toFileChoice == 'F') {
                 createFile(Students, Students[0].nd.size());
-                printResults(Students, true, "kursiokai.txt");
+                printResults(Students, true, "rezultatai.txt");
             } else {
                 printResults(Students, false);
             }
