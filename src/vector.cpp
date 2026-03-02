@@ -38,9 +38,9 @@ double avg(const std::vector<int> &nd, int egz) {
     return 0.4*(double(sum)/nd.size()) + 0.6*egz;
 }
 
-std::string GenerateName(const std::string &vardas,
-                             const std::vector<std::string> &saknys)
-{
+std::string GenerateName(const std::string &vardas, const std::vector<std::string> &saknys) {
+    assert(!vardas.empty());
+    assert(!saknys.empty());
     std::string saknis = saknys.at(rand() % saknys.size());
 
     if (vardas.substr(vardas.size() - 2) == "as")
@@ -75,6 +75,9 @@ bool createFile (const std::vector<Student> &Students, int n) {
 }
 
 bool readFile(const std::string &filename, std::vector<Student> &Students) {
+    if (filename.empty()) {
+        throw std::runtime_error("Failo pavadinimas negali buti tuscias.");
+    }
     std::ifstream stud_file(filename);
 
     if (!stud_file.is_open()) {
@@ -91,11 +94,19 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         iss >> s.name >> s.surname;
         int mark;
         while (iss >> mark) {
+            assert(mark >= 1 && mark <= 10);
             s.nd.push_back(mark);
         }
+
+        if (s.nd.size() < 2) {
+            throw std::runtime_error("Per mazai pazymiu faile.");
+        }
+
         if (s.nd.size() >= 2) {
         s.egz = s.nd.back();
         s.nd.pop_back();
+
+        assert(s.egz >= 1 && s.egz <= 10);
 
         s.finalAvg = avg(s.nd, s.egz);
         s.finalMed = med(s.nd, s.egz);
@@ -130,6 +141,9 @@ bool compareByAvg(const Student &a, const Student &b) {
 }
 
 void printResults(const std::vector<Student> &Students, bool toFile = false, const std::string &filename = "rezultatai.txt") {
+    if (Students.empty()) {
+        throw std::runtime_error("Studentu sarasas tuscias.");
+    }
     std::ofstream file;
     if (toFile) {
         file.open(filename);
@@ -153,27 +167,27 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
 
 void outputToFileSorting(std::vector<Student>& Students) {
     int sorting;
-        std::cout << "Pasirinkite pagal ka rusiuoti duomenis:\n";
-        std::cout << "1 - rusiuoti pagal varda.\n";
-        std::cout << "2 - rusiuoti pagal pavarde.\n";
-        std::cout << "3 - rusiuoti pagal galutini ivertinima (Vid.).\n";
-        std::cout << "4 - rusiuoti pagal galutini ivertinima (Med.).\n";
-        std::cin >> sorting;
-        while (std::cin.fail() || sorting < 1 || sorting > 4) {
-        std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cin >> sorting;
-        }
+    std::cout << "Pasirinkite pagal ka rusiuoti duomenis:\n";
+    std::cout << "1 - rusiuoti pagal varda.\n";
+    std::cout << "2 - rusiuoti pagal pavarde.\n";
+    std::cout << "3 - rusiuoti pagal galutini ivertinima (Vid.).\n";
+    std::cout << "4 - rusiuoti pagal galutini ivertinima (Med.).\n";
+    std::cin >> sorting;
+    while (std::cin.fail() || sorting < 1 || sorting > 4) {
+    std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::cin >> sorting;
+    }
 
-        if (sorting == 1)
-            std::sort(Students.begin(), Students.end(), compareByName);
-        else if (sorting == 2)
-            std::sort(Students.begin(), Students.end(), compareBySurname);
-        else if (sorting == 3)
-            std::sort(Students.begin(), Students.end(), compareByAvg);
-        else if (sorting == 4)
-            std::sort(Students.begin(), Students.end(), compareByMed);
+    if (sorting == 1)
+        std::sort(Students.begin(), Students.end(), compareByName);
+    else if (sorting == 2)
+        std::sort(Students.begin(), Students.end(), compareBySurname);
+    else if (sorting == 3)
+        std::sort(Students.begin(), Students.end(), compareByAvg);
+    else if (sorting == 4)
+        std::sort(Students.begin(), Students.end(), compareByMed);
 }
 
 void handleOutput(std::vector<Student>& Students) {
@@ -201,6 +215,7 @@ void handleOutput(std::vector<Student>& Students) {
 }
 
 int main() {
+    try {
     Student s;
     int mark;
     std::vector<Student> Students;
@@ -372,6 +387,23 @@ int main() {
         std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
         Students.clear();
     }
-    }    
+    }
+    }
+    catch (const std::out_of_range& e) {
+        std::cerr << "Out of range klaida: " << e.what() << std::endl;
+        return 1;
+    }
+    catch (const std::runtime_error& e) {
+        std::cerr << "Runtime klaida: " << e.what() << std::endl;
+        return 1;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Standartine klaida: " << e.what() << std::endl;
+        return 1;
+    }
+    catch (...) {
+        std::cerr << "Nežinoma klaida." << std::endl;
+        return 1;
+    }
     return 0;
 }
