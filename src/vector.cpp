@@ -229,66 +229,56 @@ int showMenu() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin >> choice;
     }
-    
+
     return choice;
 }
 
-int main() {
-    try {
-    Student s;
-    int mark;
-    std::vector<Student> Students;
-    srand(time(NULL));
-    
+void manualInput(std::vector<Student>& Students) {
     while (true) {
-    int choice = showMenu();
-        
-        if (choice == 1) {
-            while (true) {
-                s.nd.clear();
+        Student s;
+        int mark;
+        s.nd.clear();
                 
-                std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
-                std::cin >> s.name;
-                if (s.name == "STOP") break;
+        std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
+        std::cin >> s.name;
+        if (s.name == "STOP") break;
                 
-                std::cout << "Iveskite studento pavarde: \n";
-                std::cin >> s.surname;
+        std::cout << "Iveskite studento pavarde: \n";
+        std::cin >> s.surname;
                 
-                std::cout << "Iveskite studento namu darbo ivertinima arba parasykite '0', jei norite baigti ivesti: \n";
+        std::cout << "Iveskite studento namu darbo ivertinima arba parasykite '0', jei norite baigti ivesti: \n";
                 
-                while (true) {
-                    std::cin >> mark;
-                    while (std::cin.fail() || mark < 0 || mark > 10) {
-                        std::cout << "Klaidinga ivestis. Iveskite skaiciu nuo 1 iki 10 imtinai.\n";
-                        std::cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                        std::cin >> mark;
-                    }
-                    if (mark == 0) break;
-                    s.nd.push_back(mark);
-                }
-                
-                std::cout << "Iveskite egzamino ivertinima: \n";
-                std::cin >> s.egz;
-                while (std::cin.fail() || s.egz <= 0 || s.egz > 10) {
-                    std::cout << "Klaidinga ivestis. Iveskite skaiciu nuo 1 iki 10 imtinai.\n";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cin >> s.egz;
-                }
-                
-                s.finalAvg = avg(s.nd, s.egz);
-                s.finalMed = med(s.nd, s.egz);
-
-                Students.push_back(s);
+        while (true) {
+            std::cin >> mark;
+            while (std::cin.fail() || mark < 0 || mark > 10) {
+                std::cout << "Klaidinga ivestis. Iveskite skaiciu nuo 1 iki 10 imtinai.\n";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cin >> mark;
             }
-            handleOutput(Students);
-            Students.clear();
-            break;
+            if (mark == 0) break;
+            s.nd.push_back(mark);
         }
-        
-        else if (choice == 2) {
+                
+        std::cout << "Iveskite egzamino ivertinima: \n";
+        std::cin >> s.egz;
+        while (std::cin.fail() || s.egz <= 0 || s.egz > 10) {
+            std::cout << "Klaidinga ivestis. Iveskite skaiciu nuo 1 iki 10 imtinai.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin >> s.egz;
+        }
+                
+        s.finalAvg = avg(s.nd, s.egz);
+        s.finalMed = med(s.nd, s.egz);
+
+        Students.push_back(s);
+    }
+}
+
+void genrateGrades(std::vector<Student>& Students) {
     while (true) {
+        Student s;
         std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
         std::cin >> s.name;
         if (s.name == "STOP") break;
@@ -318,82 +308,105 @@ int main() {
 
         Students.push_back(s);
     }
-    handleOutput(Students);
-    Students.clear();
-    break;
 }
-        
-        else if (choice == 3) {
-            int numb, n;
-            std::cout << "Kiek studentu generuoti: \n";
-            std::cin >> numb;
-            std::cout << "Kiek namu darbu generuoti: \n";
-            std::cin >> n;
-        while (std::cin.fail() || n <= 0) {
-            std::cout << "Klaidinga ivestis. Iveskite teigiama skaiciu.\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> n;
-        }
-            for (int i = 0; i < numb; i++){
-            std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
-            std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
 
-            Student s;
-            s.name = Names.at(rand() % Names.size());
-            s.surname = GenerateName(s.name, Surnames);
+void generateNamesGrades(std::vector<Student>& Students) {
+    int numb, n;
+        std::cout << "Kiek studentu generuoti: \n";
+        std::cin >> numb;
+        std::cout << "Kiek namu darbu generuoti: \n";
+        std::cin >> n;
+    while (std::cin.fail() || n <= 0) {
+        std::cout << "Klaidinga ivestis. Iveskite teigiama skaiciu.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> n;
+    }
+        for (int i = 0; i < numb; i++){
+        std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
+        std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
+
+        Student s;
+        s.name = Names.at(rand() % Names.size());
+        s.surname = GenerateName(s.name, Surnames);
             
-            s.nd.clear();
-            for (int i = 0; i < n; i++) {
-            int exs = (rand() % 10) + 1;
-            s.nd.push_back(exs);
-            }
-            s.egz = (rand() % 10) + 1;
+        s.nd.clear();
+        for (int i = 0; i < n; i++) {
+        int exs = (rand() % 10) + 1;
+        s.nd.push_back(exs);
+        }
+        s.egz = (rand() % 10) + 1;
 
-            s.finalAvg = avg(s.nd, s.egz);
-            s.finalMed = med(s.nd, s.egz);
+        s.finalAvg = avg(s.nd, s.egz);
+        s.finalMed = med(s.nd, s.egz);
 
-            Students.push_back(s);
-            }
+        Students.push_back(s);
+        }
+}
+
+int main() {
+    try {
+    std::vector<Student> Students;
+    srand(time(NULL));
+    
+    while (true) {
+    int choice = showMenu();
+        
+        if (choice == 1) {
+            manualInput(Students);
             handleOutput(Students);
             Students.clear();
             break;
         }
         
-        else if (choice == 4) break;
-
-        else if (choice == 5) {
-        std::string filename;
-        std::cout << "Iveskite failo pavadinima: ";
-        system("powershell ls *.txt");
-        std::cin >> filename;
-        Students.clear();
-
-        auto start = std::chrono::high_resolution_clock::now();
-        
-        if (readFile(filename, Students)) {
-        std::cout << "Failas sekmingai nuskaitytas!\n";
-        outputToFileSorting(Students);
-        int outputChoice;
-            std::cout << "Kur isvesti rezultatus:\n";
-            std::cout << "1 - ekrane\n";
-            std::cout << "2 - i faila\n";
-            std::cin >> outputChoice;
-            
-            if (outputChoice == 2) {
-                printResults(Students, true, "rezultatai.txt");
-            } else {
-                printResults(Students, false);
-            }
+        else if (choice == 2) {
+            genrateGrades(Students);
+            handleOutput(Students);
+            Students.clear();
+            break;
         }
-        auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-        std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
+        
+    else if (choice == 3) {
+        generateNamesGrades(Students);
+        handleOutput(Students);
         Students.clear();
+        break;
     }
+        
+    else if (choice == 4) break;
+
+    else if (choice == 5) {
+    std::string filename;
+    std::cout << "Iveskite failo pavadinima: ";
+    system("powershell ls *.txt");
+    std::cin >> filename;
+    Students.clear();
+
+    auto start = std::chrono::high_resolution_clock::now();
+        
+    if (readFile(filename, Students)) {
+    std::cout << "Failas sekmingai nuskaitytas!\n";
+    outputToFileSorting(Students);
+    int outputChoice;
+    std::cout << "Kur isvesti rezultatus:\n";
+    std::cout << "1 - ekrane\n";
+    std::cout << "2 - i faila\n";
+    std::cin >> outputChoice;
+            
+    if (outputChoice == 2) {
+        printResults(Students, true, "rezultatai.txt");
+    } else {
+        printResults(Students, false);
     }
-    }
+}
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
+    Students.clear();
+}
+}
+}
     catch (const std::out_of_range& e) {
         std::cerr << "Out of range klaida: " << e.what() << std::endl;
         return 1;
