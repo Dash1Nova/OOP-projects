@@ -94,7 +94,6 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         iss >> s.name >> s.surname;
         int mark;
         while (iss >> mark) {
-            assert(mark >= 1 && mark <= 10);
             s.nd.push_back(mark);
         }
 
@@ -237,7 +236,6 @@ void manualInput(std::vector<Student>& Students) {
     while (true) {
         Student s;
         int mark;
-        s.nd.clear();
                 
         std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
         std::cin >> s.name;
@@ -276,7 +274,7 @@ void manualInput(std::vector<Student>& Students) {
     }
 }
 
-void genrateGrades(std::vector<Student>& Students) {
+void generateGrades(std::vector<Student>& Students) {
     while (true) {
         Student s;
         std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
@@ -296,7 +294,6 @@ void genrateGrades(std::vector<Student>& Students) {
             std::cin >> n;
         }
 
-        s.nd.clear();
         for (int i = 0; i < n; i++) {
             int exs = (rand() % 10) + 1;
             s.nd.push_back(exs);
@@ -322,10 +319,11 @@ void generateNamesGrades(std::vector<Student>& Students) {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> n;
     }
-        for (int i = 0; i < numb; i++){
-        std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
-        std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
-
+    
+    std::vector<std::string> Names = {"Jonas", "Domantas", "Martynas", "Edvinas", "Evelina", "Karolina", "Gabija", "Livija"};
+    std::vector<std::string> Surnames = {"1Pavard", "2Pavard", "3Pavard", "4Pavard", "5Pavard"};
+        
+    for (int i = 0; i < numb; i++){
         Student s;
         s.name = Names.at(rand() % Names.size());
         s.surname = GenerateName(s.name, Surnames);
@@ -355,21 +353,18 @@ int main() {
         if (choice == 1) {
             manualInput(Students);
             handleOutput(Students);
-            Students.clear();
             break;
         }
         
         else if (choice == 2) {
-            genrateGrades(Students);
+            generateGrades(Students);
             handleOutput(Students);
-            Students.clear();
             break;
         }
         
     else if (choice == 3) {
         generateNamesGrades(Students);
         handleOutput(Students);
-        Students.clear();
         break;
     }
         
