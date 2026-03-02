@@ -53,68 +53,86 @@ std::string GenerateName(const std::string &vardas, const std::vector<std::strin
 }
 
 bool createFile (const std::vector<Student> &Students, int n) {
-    std::ofstream kursiokai("kursiokai.txt");
-    if (!kursiokai.is_open()) {
-    throw std::runtime_error("Nepavyko sukurti failo kursiokai.txt");
-    }
-    kursiokai << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde";
-    for (int i = 0; i < n; i++) {
-        kursiokai << std::setw(6) << ("ND" + std::to_string(i+1));
-    }
-    kursiokai << std::setw(9) << "Egzaminas\n";
+    try {
+        std::ofstream kursiokai("kursiokai.txt");
 
-    for (const auto &stud: Students) {
-        kursiokai << std::left << std::setw(15) << stud.name << std::setw(15) << stud.surname;
-        for (const auto &grade: stud.nd) {
-            kursiokai << std::setw(6) << grade;
+        if (!kursiokai.is_open()) {
+            throw std::runtime_error("Nepavyko sukurti failo kursiokai.txt");
         }
-        kursiokai << stud.egz << "\n";
+        kursiokai << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde";
+        for (int i = 0; i < n; i++) {
+            kursiokai << std::setw(6) << ("ND" + std::to_string(i+1));
+        }
+        kursiokai << std::setw(9) << "Egzaminas\n";
+
+        for (const auto &stud : Students) {
+            kursiokai << std::left << std::setw(15) << stud.name << std::setw(15) << stud.surname;
+            for (const auto &grade : stud.nd) {
+                kursiokai << std::setw(6) << grade;
+            }
+            kursiokai << stud.egz << "\n";
+
+            if (!kursiokai) {
+                throw std::runtime_error("Klaida rasant i kursiokai.txt");
+            }
+        }
+        return true;
     }
-    kursiokai.close();
-    return true;
+    catch (const std::exception &e) {
+        std::cerr << "createFile klaida: " << e.what() << std::endl;
+        return false;
+    }
+    catch (...) {
+        std::cerr << "createFile nezinoma klaida." << std::endl;
+        return false;
+    }
 }
 
 bool readFile(const std::string &filename, std::vector<Student> &Students) {
-    if (filename.empty()) {
-        throw std::runtime_error("Failo pavadinimas negali buti tuscias.");
-    }
-    std::ifstream stud_file(filename);
+    try {
+        std::ifstream stud_file(filename);
+        if (!stud_file.is_open()) {
+            throw std::runtime_error("Nepavyko atidaryti failo: " + filename);
+        }
+        std::cout << "Failas '" << filename << "' sekmingai atidarytas.\n";
 
-    if (!stud_file.is_open()) {
-        throw std::runtime_error("Nepavyko atidaryti failo: " + filename);
-    }
-    std::cout << "Failas '" << filename << "' sekmingai atidarytas.\n";
-    std::string line;
-    std::getline(stud_file, line);
+        std::string line;
+        std::getline(stud_file, line);
 
-    while (std::getline(stud_file, line)) {
-        if (line.empty()) continue;
-        std::istringstream iss(line);
-        Student s;
-        iss >> s.name >> s.surname;
-        int mark;
-        while (iss >> mark) {
-            s.nd.push_back(mark);
+        while (std::getline(stud_file, line)) {
+            if (line.empty()) continue;
+
+            Student s;
+            std::istringstream iss(line);
+
+            iss >> s.name >> s.surname;
+            int mark;
+            while (iss >> mark) {
+                s.nd.push_back(mark);
+            }
+
+            s.egz = s.nd.back();
+            s.nd.pop_back();
+
+            assert(s.egz >= 1 && s.egz <= 10);
+
+            s.finalAvg = avg(s.nd, s.egz);
+            s.finalMed = med(s.nd, s.egz);
+
+            Students.push_back(s);
         }
 
-        if (s.nd.size() < 2) {
-            throw std::runtime_error("Per mazai pazymiu faile.");
-        }
+        stud_file.close();
+        return true;
 
-        if (s.nd.size() >= 2) {
-        s.egz = s.nd.back();
-        s.nd.pop_back();
-
-        assert(s.egz >= 1 && s.egz <= 10);
-
-        s.finalAvg = avg(s.nd, s.egz);
-        s.finalMed = med(s.nd, s.egz);
-        
-        Students.push_back(s);
-        }
+    } catch (const std::exception& e) {
+        std::cerr << "Failo atidarymo klaida: " << e.what() << std::endl;
+        return false;
     }
-    stud_file.close();
-    return true;
+    catch (...) {
+        std::cerr << "createFile nezinoma klaida." << std::endl;
+        return false;
+    }
 }
 
 bool compareByName(const Student &a, const Student &b) {
@@ -147,7 +165,7 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
     if (toFile) {
         file.open(filename);
         if (!file.is_open()) {
-            throw std::runtime_error("Nepavyko sukurti failo: " + filename);
+            throw std::runtime_error("Nepavyko sukurti failo " + filename);
         }
     }
     
@@ -158,10 +176,14 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
     for (const auto& s : Students) {
         out << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(20) << std::fixed << std::setprecision(2) << s.finalAvg << std::setw(17) << std::fixed << std::setprecision(2) << s.finalMed << "\n";
     }
+    if (!out) {
+        throw std::runtime_error("Klaida rasant rezultatus.");
+    }
 
     if (toFile) {
         file.close();
     }
+
 }
 
 void outputToFileSorting(std::vector<Student>& Students) {
@@ -191,20 +213,17 @@ void outputToFileSorting(std::vector<Student>& Students) {
 
 void handleOutput(std::vector<Student>& Students) {
     outputToFileSorting(Students);
-
     int outputChoice;
     std::cout << "Kur isvesti rezultatus:\n";
     std::cout << "1 - ekrane\n";
     std::cout << "2 - i faila\n";
     std::cin >> outputChoice;
-
     while (std::cin.fail() || (outputChoice != 1 && outputChoice != 2)) {
         std::cout << "Klaidinga ivestis. Iveskite 1 arba 2:\n";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> outputChoice;
     }
-
     printResults(Students, outputChoice == 2, "rezultatai.txt");
 }
 
@@ -223,7 +242,6 @@ int showMenu() {
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     std::cin >> choice;
     }
-
     return choice;
 }
 
@@ -346,10 +364,15 @@ void scanFile(std::vector<Student>& Students) {
 
     auto start = std::chrono::high_resolution_clock::now();
         
-    if (readFile(filename, Students)) {
-    std::cout << "Failas sekmingai nuskaitytas!\n";
-    handleOutput(Students);
-}
+    try {
+        if (readFile(filename, Students)) {
+            std::cout << "Failas sekmingai nuskaitytas!\n";
+            handleOutput(Students);
+        }
+    } catch (const std::runtime_error& e) {
+        std::cerr << "Klaida atidarant faila: " << e.what() << std::endl;
+    }
+
     auto end = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     
@@ -357,7 +380,6 @@ void scanFile(std::vector<Student>& Students) {
 }
 
 int main() {
-    try {
     std::vector<Student> Students;
     srand(time(NULL));
     
@@ -389,22 +411,5 @@ int main() {
     break;
 }
 }
-}
-    catch (const std::out_of_range& e) {
-        std::cerr << "Out of range klaida: " << e.what() << std::endl;
-        return 1;
-    }
-    catch (const std::runtime_error& e) {
-        std::cerr << "Runtime klaida: " << e.what() << std::endl;
-        return 1;
-    }
-    catch (const std::exception& e) {
-        std::cerr << "Standartine klaida: " << e.what() << std::endl;
-        return 1;
-    }
-    catch (...) {
-        std::cerr << "Nežinoma klaida." << std::endl;
-        return 1;
-    }
     return 0;
 }
