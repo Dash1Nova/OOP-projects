@@ -54,7 +54,9 @@ std::string GenerateName(const std::string &vardas,
 
 bool createFile (const std::vector<Student> &Students, int n) {
     std::ofstream kursiokai("kursiokai.txt");
-    if (!kursiokai.is_open()) return false;
+    if (!kursiokai.is_open()) {
+    throw std::runtime_error("Nepavyko sukurti failo kursiokai.txt");
+    }
     kursiokai << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde";
     for (int i = 0; i < n; i++) {
         kursiokai << std::setw(6) << ("ND" + std::to_string(i+1));
@@ -76,8 +78,7 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
     std::ifstream stud_file(filename);
 
     if (!stud_file.is_open()) {
-        std::cout << "Klaida: nepavyko atidaryti failo \n" << filename;
-        return false;
+        throw std::runtime_error("Nepavyko atidaryti failo: " + filename);
     }
     std::cout << "Failas '" << filename << "' sekmingai atidarytas.\n";
     std::string line;
@@ -133,8 +134,7 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
     if (toFile) {
         file.open(filename);
         if (!file.is_open()) {
-            std::cout << "Klaida: nepavyko sukurti failo " << filename << ".\n";
-            return;
+            throw std::runtime_error("Nepavyko sukurti failo: " + filename);
         }
     }
     
@@ -193,15 +193,14 @@ void handleOutput(std::vector<Student>& Students) {
     }
 
     if (outputChoice == 2) {
-        createFile(Students, Students.front().nd.size());
+        createFile(Students, Students.at(0).nd.size());
         printResults(Students, true, "rezultatai.txt");
     } else {
         printResults(Students, false);
     }
 }
 
-int main()
-{
+int main() {
     Student s;
     int mark;
     std::vector<Student> Students;
@@ -226,7 +225,6 @@ int main()
         
         if (choice == 1) {
             while (true) {
-                
                 s.nd.clear();
                 
                 std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
@@ -264,7 +262,6 @@ int main()
 
                 Students.push_back(s);
             }
-
             handleOutput(Students);
             Students.clear();
             break;
@@ -301,7 +298,6 @@ int main()
 
         Students.push_back(s);
     }
-
     handleOutput(Students);
     Students.clear();
     break;
