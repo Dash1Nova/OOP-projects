@@ -205,12 +205,7 @@ void handleOutput(std::vector<Student>& Students) {
         std::cin >> outputChoice;
     }
 
-    if (outputChoice == 2) {
-        createFile(Students, Students.at(0).nd.size());
-        printResults(Students, true, "rezultatai.txt");
-    } else {
-        printResults(Students, false);
-    }
+    printResults(Students, outputChoice == 2, "rezultatai.txt");
 }
 
 int showMenu() {
@@ -275,6 +270,15 @@ void manualInput(std::vector<Student>& Students) {
 }
 
 void generateGrades(std::vector<Student>& Students) {
+    int n;
+    std::cout << "Kiek namu darbu generuoti kiekvienam studentui: \n";
+    std::cin >> n;
+    while (std::cin.fail() || n <= 0) {
+        std::cout << "Klaidinga ivestis. Iveskite teigiama skaiciu.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> n;
+    }
     while (true) {
         Student s;
         std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
@@ -284,15 +288,6 @@ void generateGrades(std::vector<Student>& Students) {
         std::cout << "Iveskite studento pavarde: \n";
         std::cin >> s.surname;
 
-        int n;
-        std::cout << "Kiek namu darbu generuoti: \n";
-        std::cin >> n;
-        while (std::cin.fail() || n <= 0) {
-            std::cout << "Klaidinga ivestis. Iveskite teigiama skaiciu.\n";
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cin >> n;
-        }
 
         for (int i = 0; i < n; i++) {
             int exs = (rand() % 10) + 1;
@@ -342,6 +337,25 @@ void generateNamesGrades(std::vector<Student>& Students) {
         }
 }
 
+void scanFile(std::vector<Student>& Students) {
+    std::string filename;
+    std::cout << "Iveskite failo pavadinima: ";
+    system("powershell ls *.txt");
+    std::cin >> filename;
+    Students.clear();
+
+    auto start = std::chrono::high_resolution_clock::now();
+        
+    if (readFile(filename, Students)) {
+    std::cout << "Failas sekmingai nuskaitytas!\n";
+    handleOutput(Students);
+}
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
+}
+
 int main() {
     try {
     std::vector<Student> Students;
@@ -371,34 +385,8 @@ int main() {
     else if (choice == 4) break;
 
     else if (choice == 5) {
-    std::string filename;
-    std::cout << "Iveskite failo pavadinima: ";
-    system("powershell ls *.txt");
-    std::cin >> filename;
-    Students.clear();
-
-    auto start = std::chrono::high_resolution_clock::now();
-        
-    if (readFile(filename, Students)) {
-    std::cout << "Failas sekmingai nuskaitytas!\n";
-    outputToFileSorting(Students);
-    int outputChoice;
-    std::cout << "Kur isvesti rezultatus:\n";
-    std::cout << "1 - ekrane\n";
-    std::cout << "2 - i faila\n";
-    std::cin >> outputChoice;
-            
-    if (outputChoice == 2) {
-        printResults(Students, true, "rezultatai.txt");
-    } else {
-        printResults(Students, false);
-    }
-}
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
-    Students.clear();
+    scanFile(Students);
+    break;
 }
 }
 }
