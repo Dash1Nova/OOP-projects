@@ -6,7 +6,7 @@
 #include <algorithm>
 #include <fstream>
 
-void printResults(const std::vector<Student> &Students, bool toFile = false, const std::string &filename = "rezultatai.txt") {
+void printResults(const std::vector<Student> &Students, bool toFile, const std::string &filename) {
     if (Students.empty()) {
         throw std::runtime_error("Studentu sarasas tuscias.");
     }
