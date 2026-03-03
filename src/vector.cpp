@@ -7,7 +7,6 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
-#include <cassert>
 
 struct Student {
     std::string name, surname;
@@ -143,8 +142,6 @@ double avg(const std::vector<int> &nd, int egz) {
 }
 
 std::string GenerateName(const std::string &vardas, const std::vector<std::string> &saknys) {
-    assert(!vardas.empty());
-    assert(!saknys.empty());
     std::string saknis = saknys.at(rand() % saknys.size());
 
     if (vardas.substr(vardas.size() - 2) == "as")
@@ -183,11 +180,11 @@ bool createFile (const std::vector<Student> &Students, int n) {
         return true;
     }
     catch (const std::exception &e) {
-        std::cerr << "createFile klaida: " << e.what() << std::endl;
+        std::cerr << "Klaida: " << e.what() << std::endl;
         return false;
     }
     catch (...) {
-        std::cerr << "createFile nezinoma klaida." << std::endl;
+        std::cerr << "Nezinoma klaida." << std::endl;
         return false;
     }
 }
@@ -218,8 +215,6 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
             s.egz = s.nd.back();
             s.nd.pop_back();
 
-            assert(s.egz >= 1 && s.egz <= 10);
-
             s.finalAvg = avg(s.nd, s.egz);
             s.finalMed = med(s.nd, s.egz);
 
@@ -234,7 +229,7 @@ bool readFile(const std::string &filename, std::vector<Student> &Students) {
         return false;
     }
     catch (...) {
-        std::cerr << "createFile nezinoma klaida." << std::endl;
+        std::cerr << "Nezinoma klaida." << std::endl;
         return false;
     }
 }
@@ -291,43 +286,29 @@ void printResults(const std::vector<Student> &Students, bool toFile = false, con
 }
 
 void outputToFileSorting(std::vector<Student>& Students) {
-    int sorting;
-    std::cout << "Pasirinkite pagal ka rusiuoti duomenis:\n";
-    std::cout << "1 - rusiuoti pagal varda.\n";
-    std::cout << "2 - rusiuoti pagal pavarde.\n";
-    std::cout << "3 - rusiuoti pagal galutini ivertinima (Vid.).\n";
-    std::cout << "4 - rusiuoti pagal galutini ivertinima (Med.).\n";
-    std::cin >> sorting;
-    while (std::cin.fail() || sorting < 1 || sorting > 4) {
-    std::cout << "Klaidinga ivestis. Iveskite 1-4:\n";
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cin >> sorting;
-    }
+    int sorting = inputInt(
+    "Pasirinkite pagal ka rusiuoti duomenis:\n"
+    "1 - rusiuoti pagal varda.\n"
+    "2 - rusiuoti pagal pavarde.\n"
+    "3 - rusiuoti pagal galutini ivertinima (Vid.).\n"
+    "4 - rusiuoti pagal galutini ivertinima (Med.).\n",
+    1, 4);
 
-    if (sorting == 1)
-        std::sort(Students.begin(), Students.end(), compareByName);
-    else if (sorting == 2)
-        std::sort(Students.begin(), Students.end(), compareBySurname);
-    else if (sorting == 3)
-        std::sort(Students.begin(), Students.end(), compareByAvg);
-    else if (sorting == 4)
-        std::sort(Students.begin(), Students.end(), compareByMed);
+    switch (sorting) {
+        case 1: std::sort(Students.begin(), Students.end(), compareByName); break;
+        case 2: std::sort(Students.begin(), Students.end(), compareBySurname); break;
+        case 3: std::sort(Students.begin(), Students.end(), compareByAvg); break;
+        case 4: std::sort(Students.begin(), Students.end(), compareByMed); break;
+    }
 }
 
 void handleOutput(std::vector<Student>& Students) {
     outputToFileSorting(Students);
-    int outputChoice;
-    std::cout << "Kur isvesti rezultatus:\n";
-    std::cout << "1 - ekrane\n";
-    std::cout << "2 - i faila\n";
-    std::cin >> outputChoice;
-    while (std::cin.fail() || (outputChoice != 1 && outputChoice != 2)) {
-        std::cout << "Klaidinga ivestis. Iveskite 1 arba 2:\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cin >> outputChoice;
-    }
+    int outputChoice = inputInt(
+    "Kur isvesti rezultatus:\n"
+    "1 - ekrane\n"
+    "2 - i faila\n",
+    1, 2);
     printResults(Students, outputChoice == 2, "rezultatai.txt");
 }
 
@@ -339,8 +320,7 @@ int showMenu() {
         "4 - baigti darba.\n"
         "5 - nuskaityti is failo.\n"
         "Pasirinkite (1-5): ",
-        1, 5
-    );
+        1, 5);
 }
 
 void manualInput(std::vector<Student>& Students) {
