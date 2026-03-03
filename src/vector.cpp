@@ -16,6 +16,110 @@ struct Student {
     double finalAvg, finalMed;
 };
 
+char inputLetter(const std::string& message) {
+    std::string input;
+
+    while (true) {
+        try {
+            std::cout << message;
+            std::cin >> input;
+
+            if (input.length() != 1)
+                throw std::invalid_argument("Turi buti ivesta viena raide.");
+
+            if (!std::isalpha(input[0]))
+                throw std::invalid_argument("Leidziamos tik raides.");
+
+            return input[0];
+        }
+        catch (const std::exception& e) {
+            std::cout << "Klaida: " << e.what() << std::endl;
+        }
+    }
+}
+
+std::string inputWord(const std::string& message) {
+    std::string text;
+
+    while (true) {
+        try {
+            std::cout << message;
+            std::cin >> text;
+
+            if (text.empty())
+                throw std::invalid_argument("Zodis negali buti tuscias.");
+
+            for (char c: text) {
+                if (!std::isalpha(c))
+                    throw std::invalid_argument("Zodyje gali buti tik raides.");
+            }
+
+            return text;
+        }
+        catch (const std::exception& e) {
+            std::cout << "Klaida: " << e.what() << std::endl;
+        }
+    }
+}
+
+int inputInt(const std::string& message, int min = INT_MIN, int max = INT_MAX) {
+    std::string input;
+    int number;
+
+    while (true) {
+        try {
+            std::cout << message;
+            std::cin >> input;
+
+            size_t pos;
+            number = std::stoi(input, &pos);
+
+            if (pos != input.length())
+                throw std::invalid_argument("Ivestis nera sveikasis skaicius.");
+
+            if (number < min || number > max)
+                throw std::out_of_range("Skaicius nepatenka i leidziamas ribas.");
+
+            return number;
+        }
+        catch (const std::invalid_argument&) {
+            std::cout << "Klaida: reikia ivesti sveikaji skaiciu.\n";
+        }
+        catch (const std::out_of_range&) {
+            std::cout << "Klaida: ivestas skaicius uz leistinu ribu.\n";
+        }
+    }
+}
+
+double inputR(const std::string& message, double min = INT_MIN, double max = INT_MAX) {
+    std::string input;
+    double number;
+
+    while (true) {
+        try {
+            std::cout << message;
+            std::cin >> input;
+
+            size_t pos;
+            number = std::stod(input, &pos);
+
+            if (pos != input.length())
+                throw std::invalid_argument("Ivestis nera realusis skaicius.");
+
+            if (number < min || number > max)
+                throw std::out_of_range("Skaicius nepatenka i leidziamas ribas.");
+
+            return number;
+        }
+        catch (const std::invalid_argument&) {
+            std::cout << "Klaida: reikia ivesti realuji skaiciu.\n";
+        }
+        catch (const std::out_of_range&) {
+            std::cout << "Klaida: ivestas skaicius uz leistinu ribu.\n";
+        }
+    }
+}
+
 double med(const std::vector<int> &nd, int egz) {
     std::vector<int> temp = nd;
     if (nd.empty()) return 0.6 * egz;
@@ -228,21 +332,15 @@ void handleOutput(std::vector<Student>& Students) {
 }
 
 int showMenu() {
-    int choice;
-    std::cout << "1 - iveskti viska ranka.\n";
-    std::cout << "2 - generuoti tik pazymius.\n";
-    std::cout << "3 - generuoti studentu vardus, pavardes ir pazymius.\n";
-    std::cout << "4 - baigti darba.\n";
-    std::cout << "5 - nuskaityti is failo.\n";
-    std::cout << "Pasirinkite: \n";
-    std::cin >> choice;
-    while (std::cin.fail() || choice < 1 || choice > 5) {
-    std::cout << "Klaidinga ivestis. Iveskite skaiciu 1-5:\n";
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::cin >> choice;
-    }
-    return choice;
+    return inputInt(
+        "1 - ivesti viska ranka.\n"
+        "2 - generuoti tik pazymius.\n"
+        "3 - generuoti studentu vardus, pavardes ir pazymius.\n"
+        "4 - baigti darba.\n"
+        "5 - nuskaityti is failo.\n"
+        "Pasirinkite (1-5): ",
+        1, 5
+    );
 }
 
 void manualInput(std::vector<Student>& Students) {
@@ -261,7 +359,7 @@ void manualInput(std::vector<Student>& Students) {
                 
         while (true) {
             std::cin >> mark;
-            while (std::cin.fail() || mark < 0 || mark > 10) {
+            while (std::cin.fail() || mark < 1 || mark > 10) {
                 std::cout << "Klaidinga ivestis. Iveskite skaiciu nuo 1 iki 10 imtinai.\n";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -378,6 +476,7 @@ void scanFile(std::vector<Student>& Students) {
     
     std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
 }
+
 
 int main() {
     std::vector<Student> Students;
