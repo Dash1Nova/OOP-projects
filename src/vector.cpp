@@ -368,25 +368,14 @@ void manualInput(std::vector<Student>& Students) {
 }
 
 void generateGrades(std::vector<Student>& Students) {
-    int n;
-    std::cout << "Kiek namu darbu generuoti kiekvienam studentui: \n";
-    std::cin >> n;
-    while (std::cin.fail() || n <= 0) {
-        std::cout << "Klaidinga ivestis. Iveskite teigiama skaiciu.\n";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cin >> n;
-    }
+    int n = inputInt("Kiek namu darbu generuoti kiekvienam studentui: \n", 1);
     while (true) {
         Student s;
-        std::cout << "Iveskite studento varda arba zodi 'STOP', jei norite baigti ivesti: \n";
-        std::cin >> s.name;
-        if (s.name == "STOP") break;
-
-        std::cout << "Iveskite studento pavarde: \n";
-        std::cin >> s.surname;
-
-
+        s.name = inputWord("Iveskite studento varda arba zodi 'STOP', jei norite baigti:\n");
+        if (s.name == "STOP" || s.name == "stop") break;
+        s.name = inputWord("Iveskite studento pavarde: \n");
+        
+        s.nd.clear();
         for (int i = 0; i < n; i++) {
             int exs = (rand() % 10) + 1;
             s.nd.push_back(exs);
@@ -402,10 +391,10 @@ void generateGrades(std::vector<Student>& Students) {
 
 void generateNamesGrades(std::vector<Student>& Students) {
     int numb, n;
-        std::cout << "Kiek studentu generuoti: \n";
-        std::cin >> numb;
-        std::cout << "Kiek namu darbu generuoti: \n";
-        std::cin >> n;
+    std::cout << "Kiek studentu generuoti: \n";
+    std::cin >> numb;
+    std::cout << "Kiek namu darbu generuoti: \n";
+    std::cin >> n;
     while (std::cin.fail() || n <= 0) {
         std::cout << "Klaidinga ivestis. Iveskite teigiama skaiciu.\n";
         std::cin.clear();
