@@ -1,5 +1,5 @@
-#ifndef INPUT_H
-#define INPUT_H
+#ifndef INPUTVALID_H
+#define INPUTVALID_H
 
 #include <string>
 
