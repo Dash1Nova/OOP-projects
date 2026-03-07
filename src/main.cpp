@@ -33,7 +33,11 @@ int main() {
     else if (choice == 5) {
     scanFile(Students);
     break;
-}
+    }
+    else if (choice == 6) {
+    generateFile();
+    break;
+    }
 }
     return 0;
 }
