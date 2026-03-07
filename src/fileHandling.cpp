@@ -98,8 +98,8 @@ bool generateFile(const std::string &filename) {
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> nameDist;
-    std::uniform_int_distribution<> gradeDist(1, 10);
+    std::uniform_int_distribution<> name;
+    std::uniform_int_distribution<> grade(1, 10);
 
         for (int f = 0; f < fnumb; f++) {
 
@@ -120,20 +120,20 @@ bool generateFile(const std::string &filename) {
 
             file << std::setw(9) << "Egzaminas.\n";
 
-            nameDist = std::uniform_int_distribution<>(1, records);
+            name = std::uniform_int_distribution<>(1, records);
 
             for (long long i = 0; i < records; i++) {
 
-                int nameNum = nameDist(gen);
-                int surnameNum = nameDist(gen);
+                int newName = name(gen);
+                int newSurname = name(gen);
 
-                file << std::left << std::setw(15) << ("Vardas" + std::to_string(nameNum)) << std::setw(15) << ("Pavarde" + std::to_string(surnameNum));
+                file << std::left << std::setw(15) << ("Vardas" + std::to_string(newName)) << std::setw(15) << ("Pavarde" + std::to_string(newSurname));
 
                 for (int j = 0; j < ndCount; j++) {
-                    file << std::setw(6) << gradeDist(gen);
+                    file << std::setw(6) << grade(gen);
                 }
 
-                file << std::setw(10) << gradeDist(gen) << "\n";
+                file << std::setw(10) << grade(gen) << "\n";
             }
         }
     return true;
