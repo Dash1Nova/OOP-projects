@@ -112,8 +112,7 @@ bool generateFile(const std::string &filename) {
                 throw std::runtime_error("Nepavyko sukurti failo.");
             }
 
-            file << std::left << std::setw(15) << "Vardas"
-                 << std::setw(15) << "Pavarde";
+            file << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde";
 
             for (int i = 0; i < ndCount; i++) {
                 file << std::setw(6) << ("ND" + std::to_string(i + 1));
@@ -128,9 +127,7 @@ bool generateFile(const std::string &filename) {
                 int nameNum = nameDist(gen);
                 int surnameNum = nameDist(gen);
 
-                file << std::left
-                     << std::setw(15) << ("Vardas" + std::to_string(nameNum))
-                     << std::setw(15) << ("Pavarde" + std::to_string(surnameNum));
+                file << std::left << std::setw(15) << ("Vardas" + std::to_string(nameNum)) << std::setw(15) << ("Pavarde" + std::to_string(surnameNum));
 
                 for (int j = 0; j < ndCount; j++) {
                     file << std::setw(6) << gradeDist(gen);
