@@ -21,7 +21,7 @@ OUTPUT	:= output
 SRC		:= src
 
 # define include directory
-INCLUDE	:= src
+INCLUDE	:= include
 
 # define lib directory
 LIB		:= lib
