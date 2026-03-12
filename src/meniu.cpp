@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <random>
 #include <fstream>
+#include <algorithm>
 
 int showMeniu() {
     return inputInt(
@@ -202,18 +203,33 @@ void sortingStudents() {
     }
     in.close();
 
-    std::string base = filename.substr(filename.find_last_of("/\\") + 1);
+    int choiceOutput = inputInt("Rusiuoti pagal:\n"
+        "1 - Varda\n"
+        "2 - Pavarde\n"
+        "3 - Galutini bala\n", 1, 3);
+
+    if (choiceOutput == 1) {
+    std::sort(vargsiukai.begin(), vargsiukai.end(), compareByName);
+    std::sort(kietiakai.begin(), kietiakai.end(), compareByName);
+    }
+    else if (choiceOutput == 2) {
+    std::sort(vargsiukai.begin(), vargsiukai.end(), compareBySurname);
+    std::sort(kietiakai.begin(), kietiakai.end(), compareBySurname);
+    }
+    else if (choiceOutput == 3) {
+    std::sort(vargsiukai.begin(), vargsiukai.end(), compareByAvg);
+    std::sort(kietiakai.begin(), kietiakai.end(), compareByAvg);
+    }
 
     auto saveToFile = [](const std::vector<Student>& students, std::string filename) {
         std::ofstream out(filename);
+        out << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(17) << "Galutinis (Vid.)\n";
+        out << "-----------------------------------------------------------------------\n";
         for (const auto& s : students) {
-            out << s.name << " " << s.surname << " " << s.finalAvg << "\n";
+            out << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(17) << s.finalAvg << "\n";
         }
     };
 
-    //std::cout << vargsiukai.size() << " vargsiukai\n";
-    //std::cout << kietiakai.size() << " kietiakai\n";
-
-    saveToFile(vargsiukai, "data/vargsiukai_" + base);
-    saveToFile(kietiakai, "data/kietiakai_" + base);
+    saveToFile(vargsiukai, "data/vargsiukai.txt");
+    saveToFile(kietiakai, "data/kietiakai.txt");
 }
