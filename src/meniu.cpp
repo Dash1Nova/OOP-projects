@@ -176,7 +176,7 @@ void sortingStudents() {
     std::cout << "Koki faila rusiuoti i vargsiukus ir kietakius: \n";
     system("powershell ls data/*.txt");
     std::cin >> filename;
-    std::ifstream in(filename);
+    std::ifstream in("data/" + filename);
     if (!in.is_open()) return;
 
     std::vector<Student> vargsiukai, kietiakai;
@@ -186,18 +186,23 @@ void sortingStudents() {
     Student temp;
     int score;
     while (in >> temp.name >> temp.surname) {
-        double sum = 0;
+        temp.nd.clear();
+
         for (int i = 0; i < 5; i++) {
             in >> score;
-            sum += score;
+            temp.nd.push_back(score);
         }
+
         in >> temp.egz;
+
         temp.finalAvg = avg(temp.nd, temp.egz);
 
         if (temp.finalAvg < 5.0) vargsiukai.push_back(temp);
         else kietiakai.push_back(temp);
     }
     in.close();
+
+    std::string base = filename.substr(filename.find_last_of("/\\") + 1);
 
     auto saveToFile = [](const std::vector<Student>& students, std::string filename) {
         std::ofstream out(filename);
@@ -206,6 +211,9 @@ void sortingStudents() {
         }
     };
 
-    saveToFile(vargsiukai, "vargsiukai" + filename);
-    saveToFile(kietiakai, "kietiakai" + filename);
+    //std::cout << vargsiukai.size() << " vargsiukai\n";
+    //std::cout << kietiakai.size() << " kietiakai\n";
+
+    saveToFile(vargsiukai, "data/vargsiukai_" + base);
+    saveToFile(kietiakai, "data/kietiakai_" + base);
 }
