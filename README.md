@@ -26,3 +26,9 @@ Tokiu būdu matome, kiek laiko užtrunka kiekviena programos dalis, galime nusta
 | 100 000    | 0.22428         | 0.177366      | 0.34176                             | 0.170665                      | 1.77632           |
 | 1 000 000  | 2.728           | 1.60951       | 2.34987                             | 1.15905                       | 7.64221           |
 | 10 000 000 | 23.8479         | 14.5513       | 26.6695                             | 13.2392                       | 55.324            |
+
+Patvirtinimai, kad testavimai tikrai įvyko:
+<img width="618" height="293" alt="Ekrano kopija 2026-03-13 002107" src="https://github.com/user-attachments/assets/bcca40cd-4ecb-4a6d-995b-3bc8bf87f058" />
+<img width="621" height="297" alt="Ekrano kopija 2026-03-13 002228" src="https://github.com/user-attachments/assets/5c905760-de15-48c0-9e21-3d155148fcc9" />
+<img width="641" height="302" alt="Ekrano kopija 2026-03-13 002439" src="https://github.com/user-attachments/assets/ff958a9b-b3e8-4d21-a57b-64662779376e" />
+
