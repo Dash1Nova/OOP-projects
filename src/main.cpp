@@ -10,38 +10,28 @@ int main() {
     while (true) {
     int choice = showMeniu();
         
-        if (choice == 1) {
-            manualInput(Students);
-            handleOutput(Students);
-            break;
-        }
-        
-        else if (choice == 2) {
-            generateGrades(Students);
-            handleOutput(Students);
-            break;
-        }
-        
+    if (choice == 1) {
+        manualInput(Students);
+        handleOutput(Students);
+    }
+    else if (choice == 2) {
+        generateGrades(Students);
+        handleOutput(Students);
+    }
     else if (choice == 3) {
         generateNamesGrades(Students);
         handleOutput(Students);
-        break;
+    }    
+    else if (choice == 4) {
+        scanFile(Students);
     }
-        
-    else if (choice == 4) break;
-
     else if (choice == 5) {
-    scanFile(Students);
-    break;
+        generateFile();
     }
     else if (choice == 6) {
-    generateFile();
-    break;
+        sortingStudents();
     }
-    else if (choice == 7) {
-    sortingStudents();
-    break;
-    }
+    else if (choice == 7) break;
 }
     return 0;
 }

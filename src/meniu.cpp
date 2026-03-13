@@ -15,10 +15,10 @@ int showMeniu() {
         "1 - ivesti viska ranka.\n"
         "2 - generuoti tik pazymius.\n"
         "3 - generuoti studentu vardus, pavardes ir pazymius.\n"
-        "4 - baigti darba.\n"
-        "5 - nuskaityti is failo.\n"
-        "6 - generuoti failus.\n"
-        "7 - rusiuoti studentus i du atskirus failus.\n"
+        "4 - nuskaityti is failo.\n"
+        "5 - generuoti failus.\n"
+        "6 - rusiuoti studentus i du atskirus failus.\n"
+        "7 - baigti darba.\n"
         "Pasirinkite (1-7): ",
         1, 7);
 }
@@ -188,6 +188,7 @@ void sortingStudents() {
     std::ifstream in("data/" + filename);
     if (!in.is_open()) return;
 
+    std::vector<Student> students;
     std::vector<Student> vargsiukai, kietiakai;
     std::string line;
     std::getline(in, line);
@@ -207,16 +208,15 @@ void sortingStudents() {
         in >> temp.egz;
 
         temp.finalAvg = avg(temp.nd, temp.egz);
+        students.push_back(temp);
 
-        if (temp.finalAvg < 5.0) vargsiukai.push_back(temp);
-        else kietiakai.push_back(temp);
     }
     in.close();
-
+    
     auto readEnd = std::chrono::high_resolution_clock::now();
     double readTime = std::chrono::duration<double>(readEnd - readStart).count();
     std::cout << "Failo skaitymas uztruko: " << readTime << " s\n";
-
+    
     
     int choiceOutput = inputInt("Rusiuoti pagal:\n"
         "1 - Varda\n"
@@ -224,7 +224,12 @@ void sortingStudents() {
         "3 - Galutini bala\n", 1, 3);
         
     auto sortStart = std::chrono::high_resolution_clock::now();
-    
+        
+    for (const auto& s: students) {
+        if (s.finalAvg < 5.0) vargsiukai.push_back(s);
+        else kietiakai.push_back(s);
+    }
+        
     if (choiceOutput == 1) {
     std::sort(vargsiukai.begin(), vargsiukai.end(), compareByName);
     std::sort(kietiakai.begin(), kietiakai.end(), compareByName);
