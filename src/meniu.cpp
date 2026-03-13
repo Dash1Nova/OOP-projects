@@ -225,10 +225,10 @@ void sortingStudents() {
         
     auto sortStart = std::chrono::high_resolution_clock::now();
         
-    for (const auto& s: students) {
-        if (s.finalAvg < 5.0) vargsiukai.push_back(s);
-        else kietiakai.push_back(s);
-    }
+        for (const auto& s: students) {
+            if (s.finalAvg < 5.0) vargsiukai.push_back(s);
+            else kietiakai.push_back(s);
+        }
         
     if (choiceOutput == 1) {
     std::sort(vargsiukai.begin(), vargsiukai.end(), compareByName);
