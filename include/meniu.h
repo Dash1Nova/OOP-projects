@@ -16,6 +16,11 @@ void generateNamesGrades(Container& Students);
 template <typename Container>
 void scanFile(Container& Students);
 bool generateFile();
-void sortingStudents();
+
+template <typename Container>
+void sortingStudentsTemplate();
+
+template <typename Container>
+void sortingStudents(Container& Students);
 
 #endif
