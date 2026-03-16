@@ -5,6 +5,19 @@
 #include <iomanip>
 #include <algorithm>
 #include <fstream>
+#include <vector>
+#include <list>
+#include <deque>
+
+template <typename Container, typename Compare>
+void sortContainer(Container& c, Compare comp) {
+    std::sort(c.begin(), c.end(), comp);
+}
+
+template <typename Compare>
+void sortContainer(std::list<Student>& c, Compare comp) {
+    c.sort(comp);
+}
 
 template <typename Container>
 void printResults(const Container &Students, bool toFile, const std::string &filename) {
@@ -39,18 +52,18 @@ void printResults(const Container &Students, bool toFile, const std::string &fil
 template <typename Container>
 void outputToFileSorting(Container& Students) {
     int sorting = inputInt(
-    "Pasirinkite pagal ka rusiuoti duomenis:\n"
-    "1 - rusiuoti pagal varda.\n"
-    "2 - rusiuoti pagal pavarde.\n"
-    "3 - rusiuoti pagal galutini ivertinima (Vid.).\n"
-    "4 - rusiuoti pagal galutini ivertinima (Med.).\n",
-    1, 4);
+        "Pasirinkite pagal ka rusiuoti duomenis:\n"
+        "1 - rusiuoti pagal varda.\n"
+        "2 - rusiuoti pagal pavarde.\n"
+        "3 - rusiuoti pagal galutini ivertinima (Vid.).\n"
+        "4 - rusiuoti pagal galutini ivertinima (Med.).\n",
+        1, 4);
 
     switch (sorting) {
-        case 1: std::sort(Students.begin(), Students.end(), compareByName); break;
-        case 2: std::sort(Students.begin(), Students.end(), compareBySurname); break;
-        case 3: std::sort(Students.begin(), Students.end(), compareByAvg); break;
-        case 4: std::sort(Students.begin(), Students.end(), compareByMed); break;
+        case 1: sortContainer(Students, compareByName); break;
+        case 2: sortContainer(Students, compareBySurname); break;
+        case 3: sortContainer(Students, compareByAvg); break;
+        case 4: sortContainer(Students, compareByMed); break;
     }
 }
 
@@ -64,3 +77,15 @@ void handleOutput(Container& Students) {
     1, 2);
     printResults(Students, outputChoice == 2, "rezultatai.txt");
 }
+
+template void printResults<std::vector<Student>>(const std::vector<Student>&, bool, const std::string&);
+template void printResults<std::list<Student>>(const std::list<Student>&, bool, const std::string&);
+template void printResults<std::deque<Student>>(const std::deque<Student>&, bool, const std::string&);
+
+template void outputToFileSorting<std::vector<Student>>(std::vector<Student>&);
+template void outputToFileSorting<std::list<Student>>(std::list<Student>&);
+template void outputToFileSorting<std::deque<Student>>(std::deque<Student>&);
+
+template void handleOutput<std::vector<Student>>(std::vector<Student>&);
+template void handleOutput<std::list<Student>>(std::list<Student>&);
+template void handleOutput<std::deque<Student>>(std::deque<Student>&);

@@ -2,10 +2,14 @@
 #define FILEHANDLING_H
 
 #include <vector>
+#include <list>
+#include <deque>
 #include <string>
 #include "student.h"
 
-bool createFile(const std::vector<Student>& Students, int n);
-bool readFile(const std::string& filename, std::vector<Student>& Students);
+template <typename Container>
+bool createFile(const Container& Students, int n);
+template <typename Container>
+bool readFile(const std::string& filename, Container& Students);
 
 #endif
