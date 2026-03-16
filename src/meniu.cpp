@@ -108,8 +108,6 @@ void scanFile(Container& Students) {
     system("powershell ls *.txt");
     std::cin >> filename;
     Students.clear();
-
-    auto start = std::chrono::high_resolution_clock::now();
         
     try {
         if (readFile(filename, Students)) {
@@ -119,11 +117,6 @@ void scanFile(Container& Students) {
     } catch (const std::runtime_error& e) {
         std::cerr << "Klaida atidarant faila: " << e.what() << std::endl;
     }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    
-    std::cout << "Vykdymo laikas: " << duration.count() << " ms\n";
 }
 
 bool generateFile() {
@@ -142,8 +135,6 @@ bool generateFile() {
 
             records = inputInt("Kokio dydzio faila generuoti? Iveskite irasu skaiciu:\n", 1);
             std::string filename = "data/studentai_" + std::to_string(records) + ".txt";
-
-            auto start = std::chrono::high_resolution_clock::now();
 
             std::ofstream file(filename);
 
@@ -168,9 +159,6 @@ bool generateFile() {
 
                 file << std::setw(10) << grade(gen) << "\n";
             }
-            auto end = std::chrono::high_resolution_clock::now();
-            double seconds = std::chrono::duration<double>(end - start).count();
-            std::cout << "Failo generavimo laikas yra: " << seconds << " s\n";
         }
     return true;
 }
@@ -200,8 +188,6 @@ void sortingStudents(Container& students) {
     std::cout << "Koki faila rusiuoti i vargsiukus ir kietakius: \n";
     system("powershell ls data/*.txt");
     std::cin >> filename;
-
-    auto totalStart = std::chrono::high_resolution_clock::now();
 
     std::ifstream in("data/" + filename);
     if (!in.is_open()) return;
@@ -237,12 +223,18 @@ void sortingStudents(Container& students) {
         "2 - Pavarde\n"
         "3 - Galutini bala\n", 1, 3);
 
-    auto sortStart = std::chrono::high_resolution_clock::now();
+        auto splitStart = std::chrono::high_resolution_clock::now();
+        
+        for (const auto& s: students) {
+            if (s.finalAvg < 5.0) vargsiukai.push_back(s);
+            else kietiakai.push_back(s);
+        }
 
-    for (const auto& s: students) {
-        if (s.finalAvg < 5.0) vargsiukai.push_back(s);
-        else kietiakai.push_back(s);
-    }
+        auto splitEnd = std::chrono::high_resolution_clock::now();
+        double splitTime = std::chrono::duration<double>(splitEnd - splitStart).count();
+        std::cout << "Studentu skaitymas i dvi grupes uztruko: " << splitTime << " s\n";
+        
+        auto sortStart = std::chrono::high_resolution_clock::now();
 
     if (choiceOutput == 1) {
         sortContainer(vargsiukai, compareByName);
@@ -261,8 +253,6 @@ void sortingStudents(Container& students) {
     double sortTime = std::chrono::duration<double>(sortEnd - sortStart).count();
     std::cout << "Studentu rusiavimas uztruko: " << sortTime << " s\n";
 
-    auto writeStart = std::chrono::high_resolution_clock::now();
-
     auto saveToFile = [](const auto& students, std::string filename) {
         std::ofstream out(filename);
         out << std::left << std::setw(15) << "Vardas"
@@ -278,14 +268,6 @@ void sortingStudents(Container& students) {
 
     saveToFile(vargsiukai, "data/vargsiukai.txt");
     saveToFile(kietiakai, "data/kietiakai.txt");
-
-    auto writeEnd = std::chrono::high_resolution_clock::now();
-    double writeTime = std::chrono::duration<double>(writeEnd - writeStart).count();
-    std::cout << "Rasymas i failus uztruko: " << writeTime << " s\n";
-
-    auto totalEnd = std::chrono::high_resolution_clock::now();
-    double totalTime = std::chrono::duration<double>(totalEnd - totalStart).count();
-    std::cout << "Visos programos vykdymo laikas: " << totalTime << " s\n";
 }
 
 template void manualInput<std::vector<Student>>(std::vector<Student>&);
