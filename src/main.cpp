@@ -17,7 +17,6 @@ int main() {
         "2 - list\n"
         "3 - deque\n", 1, 3);
 
-        
         if (meniu == 1) {
             std::vector<Student> Students;
             while (true) {
