@@ -5,6 +5,9 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <vector>
+#include <list>
+#include <deque>
 
 template <typename Container>
 bool createFile (const Container &Students, int n) {
@@ -88,3 +91,11 @@ bool readFile(const std::string &filename, Container &Students) {
         return false;
     }
 }
+
+template bool createFile<std::vector<Student>>(const std::vector<Student>&, int);
+template bool createFile<std::list<Student>>(const std::list<Student>&, int);
+template bool createFile<std::deque<Student>>(const std::deque<Student>&, int);
+
+template bool readFile<std::vector<Student>>(const std::string&, std::vector<Student>&);
+template bool readFile<std::list<Student>>(const std::string&, std::list<Student>&);
+template bool readFile<std::deque<Student>>(const std::string&, std::deque<Student>&);
