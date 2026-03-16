@@ -268,6 +268,8 @@ void sortingStudents(Container& students) {
 
     saveToFile(vargsiukai, "data/vargsiukai.txt");
     saveToFile(kietiakai, "data/kietiakai.txt");
+
+    std::cout << "Bendras vykdymo laikas: " << readTime + splitTime + sortTime << " s\n";
 }
 
 template void manualInput<std::vector<Student>>(std::vector<Student>&);
