@@ -244,7 +244,7 @@ void sortingStudents(Container& students) {
     auto saveToFile = [](const auto& students, const std::string& filename) {
         std::ofstream out(filename);
         if (!out.is_open()) {
-            std::cerr << "Nepavyko atidaryti failo: " << filename << "\n";
+            std::cout << "Nepavyko atidaryti failo.\n";
             return;
         }
         
