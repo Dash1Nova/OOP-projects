@@ -172,16 +172,6 @@ bool generateFile() {
     }
 }
 
-template <typename Container, typename Compare>
-void sortContainer(Container& c, Compare comp) {
-    std::sort(c.begin(), c.end(), comp);
-}
-
-template <typename Compare>
-void sortContainer(std::list<Student>& c, Compare comp) {
-    c.sort(comp);
-}
-
 template <typename Container>
 void sortingStudents(Container& students) {
     std::string filename;
@@ -193,7 +183,6 @@ void sortingStudents(Container& students) {
     if (!in.is_open()) return;
 
     students.clear();
-    Container vargsiukai, kietiakai;
     std::string line;
     std::getline(in, line);
 
@@ -217,59 +206,59 @@ void sortingStudents(Container& students) {
     auto readEnd = std::chrono::high_resolution_clock::now();
     double readTime = std::chrono::duration<double>(readEnd - readStart).count();
     std::cout << "Failo skaitymas uztruko: " << readTime << " s\n";
+    std::cout << "Is viso studentu: " << students.size() << "\n";
 
     int choiceOutput = inputInt("Rusiuoti pagal:\n"
         "1 - Varda\n"
         "2 - Pavarde\n"
         "3 - Galutini bala\n", 1, 3);
 
-        auto splitStart = std::chrono::high_resolution_clock::now();
-        
-        for (const auto& s: students) {
-            if (s.finalAvg < 5.0) vargsiukai.push_back(s);
-            else kietiakai.push_back(s);
-        }
+    auto sortStart = std::chrono::high_resolution_clock::now();
 
-        auto splitEnd = std::chrono::high_resolution_clock::now();
-        double splitTime = std::chrono::duration<double>(splitEnd - splitStart).count();
-        std::cout << "Studentu skaitymas i dvi grupes uztruko: " << splitTime << " s\n";
-        
-        auto sortStart = std::chrono::high_resolution_clock::now();
-
-    if (choiceOutput == 1) {
-        sortContainer(vargsiukai, compareByName);
-        sortContainer(kietiakai, compareByName);
-    }
-    else if (choiceOutput == 2) {
-        sortContainer(vargsiukai, compareBySurname);
-        sortContainer(kietiakai, compareBySurname);
-    }
-    else if (choiceOutput == 3) {
-        sortContainer(vargsiukai, compareByAvg);
-        sortContainer(kietiakai, compareByAvg);
+    if constexpr (std::is_same_v<Container, std::list<Student>>) {
+        if (choiceOutput == 1) students.sort(compareByName);
+        else if (choiceOutput == 2) students.sort(compareBySurname);
+        else students.sort(compareByAvg);
+    } else {
+        if (choiceOutput == 1) std::sort(students.begin(), students.end(), compareByName);
+        else if (choiceOutput == 2) std::sort(students.begin(), students.end(), compareBySurname);
+        else std::sort(students.begin(), students.end(), compareByAvg);
     }
 
     auto sortEnd = std::chrono::high_resolution_clock::now();
     double sortTime = std::chrono::duration<double>(sortEnd - sortStart).count();
-    std::cout << "Studentu rusiavimas uztruko: " << sortTime << " s\n";
+    std::cout << "Bendras studentu rusiavimas uztruko: " << sortTime << " s\n";
 
-    auto saveToFile = [](const auto& students, std::string filename) {
+    auto splitStart = std::chrono::high_resolution_clock::now();
+
+    Container vargsiukai, kietiakai;
+    for (const auto& s : students) {
+        if (s.finalAvg < 5.0) vargsiukai.push_back(s);
+        else kietiakai.push_back(s);
+    }
+
+    auto splitEnd = std::chrono::high_resolution_clock::now();
+    double splitTime = std::chrono::duration<double>(splitEnd - splitStart).count();
+    std::cout << "Studentu skirstymas i dvi grupes uztruko: " << splitTime << " s\n";
+    
+    auto saveToFile = [](const auto& students, const std::string& filename) {
         std::ofstream out(filename);
-        out << std::left << std::setw(15) << "Vardas"
-            << std::setw(15) << "Pavarde"
-            << std::setw(17) << "Galutinis (Vid.)\n";
-        out << "-----------------------------------------------------------------------\n";
+        if (!out.is_open()) {
+            std::cerr << "Nepavyko atidaryti failo: " << filename << "\n";
+            return;
+        }
+        
+        out << std::left << std::setw(15) << "Vardas" << std::setw(15) << "Pavarde" << std::setw(17) << "Galutinis (Vid.)\n";
+        out << "--------------------------------------------------------\n";
         for (const auto& s : students) {
-            out << std::left << std::setw(15) << s.name
-                << std::setw(15) << s.surname
-                << std::setw(17) << s.finalAvg << "\n";
+            out << std::left << std::setw(15) << s.name << std::setw(15) << s.surname << std::setw(17) << std::fixed << std::setprecision(2) << s.finalAvg << "\n";
         }
     };
 
     saveToFile(vargsiukai, "data/vargsiukai.txt");
     saveToFile(kietiakai, "data/kietiakai.txt");
 
-    std::cout << "Bendras vykdymo laikas: " << readTime + splitTime + sortTime << " s\n";
+    std::cout << "Bendras vykdymo laikas: " << readTime + sortTime + splitTime << " s\n";
 }
 
 template void manualInput<std::vector<Student>>(std::vector<Student>&);
