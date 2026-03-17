@@ -237,7 +237,6 @@ void sortingStudents(Container& students) {
         else kietiakai.push_back(s);
     }*/
 
-    
     Container vargsiukai;
     for (auto it = students.begin(); it != students.end(); ) {
         if (it->finalAvg < 5.0) {
@@ -248,7 +247,6 @@ void sortingStudents(Container& students) {
             ++it;
         }
     }
-    
 
     /*
     auto it = std::partition(students.begin(), students.end(),
