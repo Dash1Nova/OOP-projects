@@ -206,7 +206,6 @@ void sortingStudents(Container& students) {
     auto readEnd = std::chrono::high_resolution_clock::now();
     double readTime = std::chrono::duration<double>(readEnd - readStart).count();
     std::cout << "Failo skaitymas uztruko: " << readTime << " s\n";
-    std::cout << "Is viso studentu: " << students.size() << "\n";
 
     int choiceOutput = inputInt("Rusiuoti pagal:\n"
         "1 - Varda\n"
@@ -232,7 +231,7 @@ void sortingStudents(Container& students) {
     int strategy = inputInt("Pasirinkite studentu skirstymo strategija:\n"
         "1 - du nauji konteineriai\n"
         "2 - vienas naujas konteineris ir trynimas is bendro konteinerio\n"
-        "3 - partition\n", 1, 3);
+        "3 - efektyvus metodai\n", 1, 3);
 
     Container vargsiukai, kietiakai;
 
@@ -243,27 +242,24 @@ void sortingStudents(Container& students) {
             if (s.finalAvg < 5.0) vargsiukai.push_back(s);
             else kietiakai.push_back(s);
         }
-    }
-    else if (strategy == 2) {
-        Container copyStudents = students;
-        for (auto it = copyStudents.begin(); it != copyStudents.end(); ) {
-            if (it->finalAvg < 5.0) {
-                vargsiukai.push_back(*it);
-                it = copyStudents.erase(it);
-            } else {
-                ++it;
-            }
-        }
-        kietiakai = copyStudents;
-    }
-    else if (strategy == 3) {
-        if constexpr (std::is_same_v<Container, std::list<Student>>) {
-            auto it = std::partition(students.begin(), students.end(), [](const Student& s){ return s.finalAvg < 5.0; });
-            vargsiukai.assign(students.begin(), it);
-            kietiakai.assign(it, students.end());
+    } else if (strategy == 2) {
+    for (auto it = students.begin(); it != students.end(); ) {
+        if (it->finalAvg < 5.0) {
+            vargsiukai.push_back(*it);
+            it = students.erase(it);
         } else {
-            std::partition_copy(students.begin(), students.end(), std::back_inserter(kietiakai), std::back_inserter(vargsiukai), [](const Student& s){ return s.finalAvg >= 5.0; });
+            ++it;
         }
+    }
+    kietiakai = students;
+    } else if (strategy == 3) {
+        auto it = std::partition(
+            students.begin(), students.end(),
+            [](const Student& s){ return s.finalAvg < 5.0; }
+        );
+
+        vargsiukai.assign(students.begin(), it);
+        kietiakai.assign(it, students.end());
     }
 
     auto splitEnd = std::chrono::high_resolution_clock::now();
