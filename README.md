@@ -90,7 +90,13 @@ matavimų vidurkiai.
 | 10 000           | 0.0240486                     | 0.0324099                | 0.0570868                         |
 | 100 000          | 0.28094                       | 0.332449                 | 0.538205                          |
 | 1 000 000        | 2.72145                       | 3.55926                  | 4.5782                            |
-| 10 000 000       | 31.6804                       | 31.3818                  | 52.5077                           |
+| 10 000 000       | 41.6804                       | 41.3818                  | 52.5077                           |
+
+Teoriškai std::vector turėjo būti greičiausias, nes naudoja vientisą atmintį ir pasižymi geriausia cache lokalizacija, std::deque turėjo būti šiek tiek lėtesnis 
+dėl segmentuotos atminties, std::list turėjo būti lėčiausias, nes elementai saugomi per rodykles, o tai blogina cache panaudojimą, tačiau iš tyrimo rezultatų
+galima pastebėti, kad mažiems duomenų kiekiams (1 000) greičiausias yra std::list, nuo 10 000 iki 1000000 įrašų std::vector tampa greičiausias, o std::deque 
+visais atvejais yra lėčiausias. Esant labai dideliems duomenų kiekiams (10 000 000), std::vector ir std::list rezultatai beveik susilygina. Dideliems duomenų 
+kiekiams konteinerių skirtumai mažėja dėl brangių kopijavimo operacijų, susijusių su sudėtinga Student struktūra. 
 
 ## 2 strategija (pateikiamas kelių testų laikų vidurkis)
 
@@ -102,7 +108,15 @@ matavimų vidurkiai.
 | 1 000 000        | > 1 h (nebaigta)              | 3.73521                  | > 1 h (nebaigta)                  |
 | 10 000 000       | > 1 h (nebaigta)              | 32.9376                  | > 1 h (nebaigta)                  |
 
-Testavimas su std:: vector ir std::deque dideliems failams (1 000 000 ir 10 000 000 įrašų) nebuvo pilnai užbaigtas dėl labai ilgo vykdymo laiko (virš 1 valandos). Tai rodo, kad ši strategija su šiuo konteineriu yra neefektyvi dideliems duomenų kiekiams.
+Testavimas su std:: vector ir std::deque dideliems failams (1 000 000 ir 10 000 000 įrašų) nebuvo pilnai užbaigtas dėl labai ilgo vykdymo laiko (virš 1 
+valandos). Tai rodo, kad ši strategija su šiuo konteineriu yra neefektyvi dideliems duomenų kiekiams.
+
+Galima pastebėti, kad su std::list 2 strategija veikia greičiausiai, o pats lečiausias yra std::vector. std::list konteineryje elementų šalinimas vykdomas O(1) 
+sudėtingumu, nes pakanka pakeisti rodykles į gretimus elementus, nereikia perkelti likusių duomenų. Tuo tarpu std::vector konteineryje erase operacija yra O(n), 
+nes po kiekvieno pašalinimo visi sekantys elementai turi būti perstumti atmintyje. Kadangi šioje strategijoje šalinimo operacija atliekama daug kartų, bendras 
+veikimo laikas stipriai išauga, ypač dirbant su dideliais duomenų kiekiais. std::deque konteineris šiuo atveju pasirodo geriau nei std::vector, tačiau vis tiek 
+ženkliai atsilieka nuo std::list. Taip yra todėl, kad skirtingai nei std::vector, kuris naudoja vientisą atminties bloką, std::deque yra sudarytas iš kelių 
+mažesnių atminties blokų (segmentų), sujungtų per indeksavimo mechanizmą, kas šiek tiek paspartina elementų perstumimą, lyginant su std::vector.
 
 ## 3 strategija (pateikiamas kelių testų laikų vidurkis)
 
@@ -112,7 +126,17 @@ Testavimas su std:: vector ir std::deque dideliems failams (1 000 000 ir 10 000 
 | 10 000           | 0.0255509                     | 0.0374303                | 0.0391001                         |
 | 100 000          | 0.276189                      | 0.351151                 | 0.55269                           |
 | 1 000 000        | 3.0776                        | 3.90309                  | 4.80778                           |
-| 10 000 000       | 33.412                        | 33.9702                  | 53.0299                           |
+| 10 000 000       | 33.412                        | 33.9702                  | 43.0299                           |
+
+3 strategijoje naudojamas efektyvus STL algoritmas, kuris leidžia išvengti brangių šalinimo (erase) operacijų ir sumažinti kopijavimo kiekį. Elementai yra 
+swap'inami tame pačiame konteineryje. Remiantis teorija, std::vector turėjo būti greičiausias, nes turi nuoseklią atmintį. Praktiškai std::vector ir buvo 
+greičiausias, tačiau netikėtai std::deque buvo lėčiausias. Taip galėjo atsitikti, nes std::deque naudoja segmentuotą atmintį, partition metu vyksta daug 
+perrikiavimų tarp segmentų, todėl blogiau panaudojamas cache.
+
+Bendra išvada:
+
+3 strategija yra efektyviausia, nes ji išvengia brangių šalinimo operacijų ir sumažina kopijavimo kiekį, naudodama optimizuotus STL algoritmus. Tuo tarpu 2 
+strategija tampa neefektyvi dėl dažnų erase operacijų, o 1 strategija, nors ir paprasta, reikalauja papildomo kopijavimo ir atminties.
 
 Nuotraukos, kad tyrimai įvyko:
 
