@@ -123,15 +123,12 @@ Nuotraukos, kad tyrimai įvyko:
 
 ## Naudojimosi instrukcija
 
-Įsitikinkite, kad turite įdiegtą CMake (minimali rekomenduojama versija yra 3.10). Atidarykite projekto katalogą ir atidarykite terminala. 
+Įsitikinkite, kad turite įdiegtą CMake (minimali rekomenduojama versija yra 3.10). Atidarykite terminalą ir nueikite į projekto katalogą. 
 
-**Programos paruošimas naudojimuisi:**
-1. Terminale sukurkite katalogą programos kompiliavimui įrašydami į terminala komandą: mkdir build (šį veiksmą reikia padaryti vieną kartą, kai pirmą kartą
-   paleidžiate programą)
-2. Nueikite į ką tik sukurtą katalogą įrašydami terminale komandą: cd build
-3. Paruoškite programą kompiliavimui su komanda: cmake ..
+**Programos paruošimas naudojimuisi:** (šituos žingsnius reikia daryti tik pirmą kartą leidžiant programą)
+1. Paruoškite programą kompiliavimui su komanda: cmake .
 4. Sukompiliuokite projektą: cmake --build .
 
 **Programos paleidimas:**
 
-Norėdami paleisti programą, terminale įveskite komandą: .\programa.exe
+Norėdami paleisti programą, terminale įveskite komandą: .\output\Debug\programa.exe
