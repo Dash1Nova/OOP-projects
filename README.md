@@ -122,8 +122,16 @@ Nuotraukos, kad tyrimai įvyko:
 
 
 ## Naudojimosi instrukcija
-Atsisiųskite repozitoriją ir išarchyvuokite zip katalogą. Jei dar neturite, įdiekite MinGW C/C++ kompiliatorių. Atidarykite katalogą pasirinktoje IDE. 
-Atidarykite terminalą. Jei įdiegėte MinGW ir norite paleisti programą, terminale surinkite komandą mingw32-make run (priklausomai nuo MinGW diegimo versijos gali 
-būti paleidimui reikalingos komandos mingw-make run arba make run). Dabar terminale matysite meniu. Perskaitykite jį, pasirinkę punktą, surinkite skaičių 
-terminale ir spauskite Enter. Sekite meniu terminale. (šis būdas tinka naudojant CMake MakeFile)
 
+Įsitikinkite, kad turite įdiegtą CMake (minimali rekomenduojama versija yra 3.10). Atidarykite projekto katalogą ir atidarykite terminala. 
+
+**Programos paruošimas naudojimuisi:**
+1. Terminale sukurkite katalogą programos kompiliavimui įrašydami į terminala komandą: mkdir build (šį veiksmą reikia padaryti vieną kartą, kai pirmą kartą
+   paleidžiate programą)
+2. Nueikite į ką tik sukurtą katalogą įrašydami terminale komandą: cd build
+3. Paruoškite programą kompiliavimui su komanda: cmake ..
+4. Sukompiliuokite projektą: cmake --build .
+
+**Programos paleidimas:**
+
+Norėdami paleisti programą, terminale įveskite komandą: .\programa.exe
